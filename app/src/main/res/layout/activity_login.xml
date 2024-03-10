@@ -7,6 +7,22 @@
     android:layout_height="match_parent"
     tools:context="com.example.vaccinationmanagerapp.LoginActivity">
 
+    <TextView
+        android:id="@+id/textViewWelcome1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_semibold"
+
+        android:text="Hi, Welcome Back!"
+        android:textColor="@color/blue_700"
+        android:textSize="20dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.357" />
+
     <EditText
         android:id="@+id/editTextEmailAddressLogin"
         android:layout_width="342dp"
@@ -20,14 +36,14 @@
         android:fontFamily="@font/inter_regular"
         android:hint="Your email"
         android:inputType="textEmailAddress"
-
         android:paddingHorizontal="16dp"
         android:paddingVertical="12dp"
         android:textColor="@color/text_gray"
         android:textSize="14dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewWelcome2"
         app:layout_constraintVertical_bias="0.0" />
@@ -52,39 +68,9 @@
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmailAddressLogin"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/textViewWelcome1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/inter_semibold"
-        android:text="Hi, Welcome Back!"
-        android:textColor="@color/blue_700"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.23" />
-
-    <TextView
-        android:id="@+id/textViewWelcome2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/inter_regular"
-        android:text="Hope you`re doing fine."
-        android:textColor="@color/text_gray"
-        android:textSize="14dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewWelcome1"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
@@ -93,14 +79,16 @@
         android:layout_height="48dp"
         android:layout_marginTop="23dp"
         android:background="@drawable/rounded_corner"
+
         android:fontFamily="@font/inter_medium"
         android:text="Log in"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPasswordLogin"
         app:layout_constraintVertical_bias="0.0" />
@@ -109,12 +97,13 @@
         android:id="@+id/textViewAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="134dp"
 
+        android:layout_marginTop="134dp"
+        android:layout_marginBottom="63dp"
         android:fontFamily="@font/inter_regular"
+
         android:text="Don`t have an account yet?"
         android:textColor="@color/text_gray"
-
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -128,15 +117,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="134dp"
-
         android:fontFamily="@font/inter_medium"
-        android:text="Sign up"
-        android:textColor="@color/blue_200"
 
+        android:text="Sign up"
+        android:clickable="true"
+        android:textColor="@color/blue_200"
         android:textSize="14dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toEndOf="@+id/textViewAccount"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
         app:layout_constraintVertical_bias="0.0" />
@@ -146,7 +136,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -173,24 +163,56 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonGoogleRegister"
         android:layout_width="342dp"
         android:layout_height="41dp"
         android:background="@drawable/fancy_edittext"
 
-        android:text="Sign In with Google"
-        android:fontFamily="@font/inter_medium"
-        android:textSize="14dp"
-        android:textAllCaps="false"
-        android:paddingRight="87dp"
-
         android:drawableStart="@drawable/google_icon"
+        android:fontFamily="@font/inter_medium"
         android:paddingLeft="91dp"
+        android:paddingRight="87dp"
+        android:text="Sign In with Google"
+
+        android:textAllCaps="false"
+        android:textSize="14dp"
 
 
         app:layout_constraintBottom_toTopOf="@+id/textViewAccount"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintVertical_bias="0.51" />
+
+    <TextView
+        android:id="@+id/textViewWelcome2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/inter_regular"
+
+        android:text="Hope you`re doing fine."
+        android:textColor="@color/text_gray"
+        android:textSize="14dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewWelcome1"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageViewLogin"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="51dp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewWelcome1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/logo_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
