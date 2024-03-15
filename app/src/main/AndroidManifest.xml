@@ -13,10 +13,13 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name="com.example.vaccinationmanagerapp.RegisterActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.vaccinationmanagerapp.LoginActivity"
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -15,4 +15,8 @@
     <color name="stroke_gray">#D1D5DB</color>
     <color name="edit_gray">#F9FAFB</color>
     <color name="view_gray">#E5E7EB</color>
+
+    <color name="bottom_nav_background">#1C2A3A</color>
+    <color name="bottom_nav_item">#FFFFFF</color>
+    <color name="bottom_nav_selected_item">#709BC2</color>
 </resources>

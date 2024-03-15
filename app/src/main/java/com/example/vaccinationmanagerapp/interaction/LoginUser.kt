@@ -3,6 +3,7 @@ package com.example.vaccinationmanagerapp.interaction
 import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
+import com.example.vaccinationmanagerapp.MainActivity
 import com.example.vaccinationmanagerapp.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -24,6 +25,8 @@ class LoginUser(private val activity: Activity) {
                 if (task.isSuccessful) {
                     // User logged in successfully
                     Toast.makeText(activity, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(activity, MainActivity::class.java)
+                    activity.startActivity(intent)
                 } else {
                     // Login failed
                     Toast.makeText(activity, "Login failed", Toast.LENGTH_SHORT).show()
@@ -62,6 +65,8 @@ class LoginUser(private val activity: Activity) {
                 if (task.isSuccessful) {
                     // User logged in successfully
                     Toast.makeText(activity, "Logged in successfully with Google", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(activity, MainActivity::class.java)
+                    activity.startActivity(intent)
                 } else {
                     // Login failed
                     Toast.makeText(activity, "Google login failed", Toast.LENGTH_SHORT).show()
