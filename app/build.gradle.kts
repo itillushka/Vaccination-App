@@ -57,4 +57,6 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
+    implementation("fr.tvbarthel.blurdialogfragment:lib:2.2.0")
+
 }
