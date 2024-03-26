@@ -1,11 +1,18 @@
 package com.example.vaccinationmanagerapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
+import com.example.vaccinationmanagerapp.SetAppointmentActivity
+import com.example.vaccinationmanagerapp.adapters.AppointmentItem
+import com.example.vaccinationmanagerapp.adapters.AppointmentsListAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +44,27 @@ class AppointmentFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_appointment, container, false)
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val setAppointmentButton: Button = view.findViewById(R.id.setAppointmentButton)
+        setAppointmentButton.setOnClickListener {
+            val intent = Intent(activity, SetAppointmentActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Create dummy list of appointments
+        val appointmentList = listOf(
+            AppointmentItem("Vaccine name: Hepatitis B"),
+            AppointmentItem("Vaccine name: Hepatitis A"),
+            AppointmentItem("Vaccine name: Rotavirus"),
+        )
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.recycleViewAppointments)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = AppointmentsListAdapter(appointmentList)
+    }
+
 
     companion object {
         /**
