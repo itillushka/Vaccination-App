@@ -13,4 +13,21 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="CalenderViewCustom" parent="android:TextAppearance.DeviceDefault.Medium">
+        <item name="colorControlActivated">#0F2552</item>
+        <item name="android:textColorPrimary">#0F2552</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="CalenderViewWeekCustomText" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">#101828</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="CalenderViewDateCustomText" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@drawable/calender_date_selector</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+
+    </style>
 </resources>
