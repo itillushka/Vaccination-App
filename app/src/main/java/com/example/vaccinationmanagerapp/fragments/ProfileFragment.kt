@@ -1,33 +1,19 @@
 package com.example.vaccinationmanagerapp.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.example.vaccinationmanagerapp.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -38,23 +24,132 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val imageViewSupport = view.findViewById<ImageView>(R.id.imageViewSupport)
+        val imageViewChangePassword = view.findViewById<ImageView>(R.id.imageViewPassword)
+        val imageViewAddInfo = view.findViewById<ImageView>(R.id.imageViewPhone)
+
+        imageViewSupport.setOnClickListener {
+            val dialog1 = SupportDialogFragment.newInstance()
+            dialog1.show(childFragmentManager, "SupportDialogFragment")
+        }
+
+        imageViewChangePassword.setOnClickListener {
+            val dialog2 = SupportDialogFragment.newInstance()
+            dialog2.show(childFragmentManager, "ChangePasswordDialogFragment")
+        }
+
+        imageViewAddInfo.setOnClickListener {
+            val dialog3 = SupportDialogFragment.newInstance()
+            dialog3.show(childFragmentManager, "AddMoreInfoDialogFragment")
+        }
+    }
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
             }
+    }
+}
+
+class SupportDialogFragment : DialogFragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.DialogBlur)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.support_popup_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Get the close button from the popup view
+        val closeButton = view.findViewById<Button>(R.id.buttonCloseSUpport)
+
+        // Set an OnClickListener for the close button
+        closeButton.setOnClickListener {
+            // Dismiss the popup window when the close button is clicked
+            dismiss()
+        }
+    }
+
+    companion object {
+        fun newInstance() = SupportDialogFragment()
+    }
+}
+
+class ChangePasswordDialogFragment : DialogFragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.DialogBlur)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.change_password_popup_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Get the close button from the popup view
+        val closeButton = view.findViewById<Button>(R.id.buttonClosePasswordPopup)
+
+        // Set an OnClickListener for the close button
+        closeButton.setOnClickListener {
+            // Dismiss the popup window when the close button is clicked
+            dismiss()
+        }
+    }
+
+    companion object {
+        fun newInstance() = SupportDialogFragment()
+    }
+}
+
+class AddMoreInfoDialogFragment : DialogFragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.DialogBlur)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.add_more_info_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Get the close button from the popup view
+        val closeButton = view.findViewById<Button>(R.id.buttonCloseAddInfoPopup)
+
+        // Set an OnClickListener for the close button
+        closeButton.setOnClickListener {
+            // Dismiss the popup window when the close button is clicked
+            dismiss()
+        }
+    }
+
+    companion object {
+        fun newInstance() = SupportDialogFragment()
     }
 }

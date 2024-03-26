@@ -53,8 +53,8 @@
         android:layout_width="342dp"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/fancy_edittext"
 
+        android:background="@drawable/fancy_edittext"
         android:drawableStart="@drawable/password_register_icon"
         android:drawablePadding="8dp"
         android:ems="10"
