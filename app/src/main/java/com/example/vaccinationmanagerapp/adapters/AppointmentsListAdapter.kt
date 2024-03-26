@@ -3,6 +3,7 @@ package com.example.vaccinationmanagerapp.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -30,9 +31,9 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
         val currentItem = appointmentList[position]
         holder.appmName.text = currentItem.appointmentText
 
-        // Change the appointmentStatus ImageView for the second item in the list
         if (position == 1) {
             holder.appointmentStatus.setImageResource(R.drawable.completed_appm_icon)
+
         } else {
             holder.appointmentStatus.setImageResource(R.drawable.upcoming_appm_icon)
         }
