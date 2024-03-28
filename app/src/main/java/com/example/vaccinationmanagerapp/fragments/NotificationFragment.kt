@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
+import com.example.vaccinationmanagerapp.adapters.AppointmentItem
+import com.example.vaccinationmanagerapp.adapters.NotificationItem
+import com.example.vaccinationmanagerapp.adapters.RecentNotificationsAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +41,30 @@ class NotificationFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_notification, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recentNotificationsList = listOf(
+            NotificationItem("Vaccination Date",
+                "According to your previous vaccination record your next dose should be in 2 weeks.",
+                "27/03/2024"),
+            NotificationItem("Vaccination Date",
+                "According to your previous vaccination record your next dose should be in 2 weeks.",
+                "29/03/2024"),
+            NotificationItem("Vaccination Date",
+                "According to your previous vaccination record your next dose should be in 2 weeks.",
+                "28/03/2024")
+
+        )
+        val recyclerView: RecyclerView = view.findViewById(R.id.recentNotificationsRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = RecentNotificationsAdapter(recentNotificationsList)
+
+        val recyclerView1: RecyclerView = view.findViewById(R.id.allNotificationsRecycleView)
+        recyclerView1.layoutManager = LinearLayoutManager(activity)
+        recyclerView1.adapter = RecentNotificationsAdapter(recentNotificationsList)
     }
 
     companion object {

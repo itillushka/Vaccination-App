@@ -2,11 +2,13 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.gms.google-services")
+
 }
 
 android {
     namespace = "com.example.vaccinationmanagerapp"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.example.vaccinationmanagerapp"
@@ -58,5 +60,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
     implementation("fr.tvbarthel.blurdialogfragment:lib:2.2.0")
+
+    implementation("mysql:mysql-connector-java:5.1.26")
+
 
 }

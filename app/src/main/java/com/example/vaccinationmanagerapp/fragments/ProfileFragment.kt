@@ -37,12 +37,12 @@ class ProfileFragment : Fragment() {
         }
 
         imageViewChangePassword.setOnClickListener {
-            val dialog2 = SupportDialogFragment.newInstance()
+            val dialog2 = ChangePasswordDialogFragment.newInstance()
             dialog2.show(childFragmentManager, "ChangePasswordDialogFragment")
         }
 
         imageViewAddInfo.setOnClickListener {
-            val dialog3 = SupportDialogFragment.newInstance()
+            val dialog3 = AddMoreInfoDialogFragment.newInstance()
             dialog3.show(childFragmentManager, "AddMoreInfoDialogFragment")
         }
     }
