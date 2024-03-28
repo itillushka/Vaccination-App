@@ -18,7 +18,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/vaccinRecBg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/bg_appointment"
@@ -54,10 +54,10 @@
             android:text="Your Appointments"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintBottom_toBottomOf="@+id/vaccinRecBg"
+            app:layout_constraintEnd_toEndOf="@+id/vaccinRecBg"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/vaccinRecBg"
             app:layout_constraintVertical_bias="0.091" />
 
         <ImageButton
@@ -68,7 +68,7 @@
             android:contentDescription="sort"
             android:src="@drawable/sort_icon"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/vaccinRecBg"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/setAppointmentButton"
             app:layout_constraintTop_toTopOf="parent"
@@ -81,7 +81,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/vaccinRecBg"
             app:layout_constraintVertical_bias="0.13">
 
             <androidx.recyclerview.widget.RecyclerView

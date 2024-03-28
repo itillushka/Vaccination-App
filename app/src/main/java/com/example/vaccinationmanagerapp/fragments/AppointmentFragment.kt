@@ -1,5 +1,7 @@
 package com.example.vaccinationmanagerapp.fragments
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
@@ -84,5 +87,25 @@ class AppointmentFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+}
+class AppointmentDetailsDialogFragment : DialogFragment() {
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            val builder = AlertDialog.Builder(it)
+            val inflater: LayoutInflater = requireActivity().layoutInflater;
+            val view = inflater.inflate(R.layout.appointment_details_popup, null)
+
+            val closeButton: Button = view.findViewById(R.id.closeButtonAppmDetails)
+            closeButton.setOnClickListener {
+                dismiss()
+            }
+
+            builder.setView(view)
+            val dialog = builder.create()
+            dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_dialog)
+            dialog
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 }
