@@ -1,11 +1,20 @@
 package com.example.vaccinationmanagerapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.vaccinationmanagerapp.AddRecordActivity
 import com.example.vaccinationmanagerapp.R
+import com.example.vaccinationmanagerapp.SetAppointmentActivity
+import com.example.vaccinationmanagerapp.adapters.AppointmentsListAdapter
+import com.example.vaccinationmanagerapp.adapters.VaccinationHistoryListAdapter
+import com.example.vaccinationmanagerapp.models.VaccinationRecord
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +38,7 @@ class RecordsFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+    private lateinit var vaccinationRecordsRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +46,24 @@ class RecordsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_records, container, false)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val addRecordButton: Button = view.findViewById(R.id.addVaccinationButton)
+        addRecordButton.setOnClickListener {
+            val intent = Intent(activity, AddRecordActivity::class.java)
+            startActivity(intent)
+        }
+        val recordsList = listOf(
+            VaccinationRecord("Hepatitis A", 1, "April 15, 2023", "after 6-18 months"),
+            VaccinationRecord("Hepatitis B", 2, "May 20, 2023", "after 6-18 months"),
+            VaccinationRecord("Influenza", 1, "June 10, 2023", "after 1 year")
+        )
+        val recyclerView: RecyclerView = view.findViewById(R.id.vaccinationRecordsRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = VaccinationHistoryListAdapter(recordsList)
+
     }
 
     companion object {
