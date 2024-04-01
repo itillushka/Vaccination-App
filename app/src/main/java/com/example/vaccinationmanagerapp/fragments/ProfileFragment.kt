@@ -202,12 +202,13 @@ class AddMoreInfoDialogFragment : DialogFragment() {
                         editTextAddInfoPhone.text.toString(),
                         editTextAddInfoAge.text.toString(),
                         spinnerGender.selectedItem.toString()
+
                     )
                 }
                 }
             }
 
-
+            dismiss()
         }
     }
     suspend fun updateAddInfoUser(phone_number : String, age: String, userGender: String){
