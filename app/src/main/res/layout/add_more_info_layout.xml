@@ -72,32 +72,32 @@
         app:layout_constraintStart_toStartOf="@+id/editTextAddInfoPhone"
         app:layout_constraintTop_toBottomOf="@+id/editTextAddInfoPhone" />
 
-    <EditText
-        android:id="@+id/editTextAddInfoGender"
+    <Spinner
+        android:id="@+id/spinnerGender"
         android:layout_width="326dp"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/fancy_edittext"
-        android:drawableStart="@drawable/user_register_icon"
-        android:drawablePadding="8dp"
-        android:ems="10"
         android:fontFamily="@font/inter_regular"
         android:paddingHorizontal="16dp"
         android:paddingVertical="12dp"
         android:textColor="@color/text_gray"
-        android:textSize="14dp"
-        android:hint="Gender"
-        android:inputType="text"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/editTextAddInfoAge"
         app:layout_constraintStart_toStartOf="@+id/editTextAddInfoAge"
         app:layout_constraintTop_toBottomOf="@+id/editTextAddInfoAge" />
 
     <Button
         android:id="@+id/buttonCloseAddInfoPopup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="88dp"
+        android:layout_width="144dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="44dp"
+        android:background="@drawable/button_with_blue_stroke"
+        android:fontFamily="@font/poppins_semibold"
         android:text="Close"
+        android:textAllCaps="false"
+        android:textColor="@color/blue_500"
+        android:textSize="13dp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonConfirmAddInfoPopup"
         app:layout_constraintEnd_toStartOf="@+id/buttonConfirmAddInfoPopup"
         app:layout_constraintTop_toTopOf="@+id/buttonConfirmAddInfoPopup"
@@ -105,14 +105,19 @@
 
     <Button
         android:id="@+id/buttonConfirmAddInfoPopup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="59dp"
+        android:layout_width="144dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/gradient_rounded_button"
+        android:fontFamily="@font/poppins_semibold"
         android:text="Confirm"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.743"
+        app:layout_constraintHorizontal_bias="0.842"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddInfoGender" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerGender" />
 
     <TextView
         android:id="@+id/textViewStatic22"
