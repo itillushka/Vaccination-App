@@ -3,4 +3,10 @@
     <string name="default_web_client_id">957454608712-iun0vo5e2rv3tj4lslptju3fnaknalc7.apps.googleusercontent.com</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="gender_array">
+        <item>Select Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
 </resources>

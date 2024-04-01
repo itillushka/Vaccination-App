@@ -27,5 +27,22 @@ class UsersDBQueries(private val connection: Connection) : UsersDAO {
         return result
     }
 
+    override fun updateUser(
+        phone_number: String,
+        age: Int,
+        gender: gender,
+        firebase_user_id: String
+    ): Boolean {
+        val call = "{CALL updateUsers(?, ?, ?, ?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebase_user_id)
+        statement.setString(2, phone_number)
+        statement.setInt(3, age)
+        statement.setString(4, gender.name)
+        val result = !statement.execute()
+        statement.close()
+        return result
+    }
+
 
 }

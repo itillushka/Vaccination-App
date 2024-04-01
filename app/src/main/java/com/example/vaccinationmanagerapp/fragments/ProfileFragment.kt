@@ -1,14 +1,27 @@
 package com.example.vaccinationmanagerapp.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.example.vaccinationmanagerapp.R
+import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
+import com.example.vaccinationmanagerapp.mySQLDatabase.users.Users
+import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
+import com.example.vaccinationmanagerapp.mySQLDatabase.users.gender
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class ProfileFragment : Fragment() {
 
@@ -117,7 +130,7 @@ class ChangePasswordDialogFragment : DialogFragment() {
     }
 
     companion object {
-        fun newInstance() = SupportDialogFragment()
+        fun newInstance() = ChangePasswordDialogFragment()
     }
 }
 
@@ -139,17 +152,88 @@ class AddMoreInfoDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get the close button from the popup view
-        val closeButton = view.findViewById<Button>(R.id.buttonCloseAddInfoPopup)
+        // Get the spinner from the popup view
+        val spinnerGender = view.findViewById<Spinner>(R.id.spinnerGender)
 
-        // Set an OnClickListener for the close button
-        closeButton.setOnClickListener {
-            // Dismiss the popup window when the close button is clicked
-            dismiss()
+        // Get the fields from the popup view
+        val editTextAddInfoPhone = view.findViewById<EditText>(R.id.editTextAddInfoPhone)
+        val editTextAddInfoAge = view.findViewById<EditText>(R.id.editTextAddInfoAge)
+        // Get the confirm button from the popup view
+        val buttonConfirm = view.findViewById<Button>(R.id.buttonConfirmAddInfoPopup)
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.gender_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinnerGender.adapter = adapter
+        }
+        spinnerGender.setSelection(0)
+
+
+        // Set an OnClickListener for the confirm button
+        buttonConfirm.setOnClickListener {
+            // Reset the backgrounds
+            editTextAddInfoPhone.setBackgroundResource(R.drawable.fancy_edittext)
+            editTextAddInfoAge.setBackgroundResource(R.drawable.fancy_edittext)
+            spinnerGender.setBackgroundColor(R.drawable.fancy_edittext)
+
+            // Check if any of the fields are empty
+            if (editTextAddInfoPhone.text.toString().isEmpty()) {
+                editTextAddInfoPhone.setBackgroundResource(R.drawable.fancy_red_edittext)
+            }
+            if (editTextAddInfoAge.text.toString().isEmpty()) {
+                editTextAddInfoAge.setBackgroundResource(R.drawable.fancy_red_edittext)
+            }
+            if (spinnerGender.selectedItemPosition == 0) {
+                spinnerGender.setBackgroundResource(R.drawable.fancy_red_edittext)
+            }
+            // If all fields are filled, insert the user info into the database
+            if (editTextAddInfoPhone.text.toString()
+                    .isNotEmpty() && editTextAddInfoAge.text.toString()
+                    .isNotEmpty() && spinnerGender.selectedItemPosition != 0
+            ) {
+                runBlocking { launch(Dispatchers.IO) {
+                    updateAddInfoUser(
+                        editTextAddInfoPhone.text.toString(),
+                        editTextAddInfoAge.text.toString(),
+                        spinnerGender.selectedItem.toString()
+                    )
+                }
+                }
+            }
+
+
+        }
+    }
+    suspend fun updateAddInfoUser(phone_number : String, age: String, userGender: String){
+        withContext(Dispatchers.IO) {
+            // Getting connection using DBConnection class
+            val connection = DBconnection.getConnection()
+            val dbQueries = UsersDBQueries(connection)
+
+            val firebaseAuth = FirebaseAuth.getInstance()
+            val firebaseUser = firebaseAuth.currentUser
+            var firebaseUserId : String = ""
+
+            if (firebaseUser != null) {
+                firebaseUserId = firebaseUser.uid
+            }
+
+            val userGender = gender.valueOf(userGender)
+            // Inserting the new user into the database
+            dbQueries.updateUser(phone_number, age.toInt(), userGender, firebaseUserId)
+
+            connection.close() // Closing the database connection
         }
     }
 
     companion object {
-        fun newInstance() = SupportDialogFragment()
+        fun newInstance() = AddMoreInfoDialogFragment()
     }
 }
+
