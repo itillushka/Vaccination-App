@@ -1,6 +1,7 @@
 package com.example.vaccinationmanagerapp.mySQLDatabase.appointment
 
 import java.sql.Connection
+import java.sql.Date
 
 class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO {
 
@@ -24,5 +25,17 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         val result = !statement.execute()
         statement.close()
         return result
+    }
+
+    fun getAppointmentDate(firebase_user_id: String): Date? {
+        val call = "{CALL getAppointmentDate(?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebase_user_id)
+        val resultSet = statement.executeQuery()
+        return if (resultSet.next()) {
+            resultSet.getDate("date")
+        } else {
+            null
+        }
     }
 }
