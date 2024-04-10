@@ -63,5 +63,19 @@ class UsersDBQueries(private val connection: Connection) : UsersDAO {
         return result
     }
 
+    override fun fetchUserRole(firebase_user_id: String): String {
+    val call = "{CALL fetchUserRole(?)}"
+    val statement = connection.prepareCall(call)
+    statement.setString(1, firebase_user_id)
+    val resultSet = statement.executeQuery()
+    var role = ""
+    if (resultSet.next()) {
+        role = resultSet.getString("role")
+    }
+    resultSet.close()
+    statement.close()
+    return role
+}
+
 
 }
