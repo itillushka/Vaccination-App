@@ -1,5 +1,6 @@
 package com.example.vaccinationmanagerapp.fragments
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.vaccinationmanagerapp.LoginActivity
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.Users
@@ -92,7 +94,22 @@ class ProfileFragment : Fragment() {
             dialog3.show(childFragmentManager, "AddMoreInfoDialogFragment")
         }
 
+        val textViewLogout = view.findViewById<TextView>(R.id.textViewStatic14)
+        val imageViewLogout = view.findViewById<ImageView>(R.id.imageView11)
+
+        val clickListener = View.OnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+        }
+
+        textViewLogout.setOnClickListener(clickListener)
+        imageViewLogout.setOnClickListener(clickListener)
+
         lifecycleScope.launch { fetchUserData() }
+
+
 
     }
 
