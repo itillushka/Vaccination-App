@@ -10,8 +10,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.Users
@@ -24,6 +26,37 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class ProfileFragment : Fragment() {
+
+    suspend fun fetchUserData() {
+        withContext(Dispatchers.IO) {
+            // Getting connection using DBConnection class
+            val connection = DBconnection.getConnection()
+            val dbQueries = UsersDBQueries(connection)
+
+            val firebaseAuth = FirebaseAuth.getInstance()
+            val firebaseUser = firebaseAuth.currentUser
+            var firebaseUserId: String = ""
+
+            if (firebaseUser != null) {
+                firebaseUserId = firebaseUser.uid
+            }
+
+            // Fetching the user data from the database
+            val userData = dbQueries.fetchUserData(firebaseUserId)
+
+            connection.close() // Closing the database connection
+
+            withContext(Dispatchers.Main) {
+                val textViewPhoneProfile = view?.findViewById<TextView>(R.id.textViewPhoneProfile)
+                val textViewAgeProfile = view?.findViewById<TextView>(R.id.textViewAgeProfile)
+                val textViewGenderProfile = view?.findViewById<TextView>(R.id.textViewGenderProfile)
+
+                textViewPhoneProfile?.text = userData[0]
+                textViewAgeProfile?.text = userData[1]
+                textViewGenderProfile?.text = userData[2]
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +91,9 @@ class ProfileFragment : Fragment() {
             val dialog3 = AddMoreInfoDialogFragment.newInstance()
             dialog3.show(childFragmentManager, "AddMoreInfoDialogFragment")
         }
+
+        lifecycleScope.launch { fetchUserData() }
+
     }
 
     companion object {

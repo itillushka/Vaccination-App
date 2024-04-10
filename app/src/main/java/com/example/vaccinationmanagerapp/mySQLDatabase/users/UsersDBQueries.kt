@@ -44,5 +44,24 @@ class UsersDBQueries(private val connection: Connection) : UsersDAO {
         return result
     }
 
+    override fun fetchUserData(firebase_user_id: String): List<String> {
+        val call = "{CALL fetchUserData(?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebase_user_id)
+        val resultSet = statement.executeQuery()
+        val result = mutableListOf<String>()
+        while (resultSet.next()) {
+            val phoneNumber = resultSet.getString("phone_number")
+            val age = resultSet.getInt("age").toString()
+            val gender = resultSet.getString("gender")
+            result.add(phoneNumber)
+            result.add(age)
+            result.add(gender)
+        }
+        resultSet.close()
+        statement.close()
+        return result
+    }
+
 
 }
