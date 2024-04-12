@@ -1,6 +1,8 @@
 package com.example.vaccinationmanagerapp
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -8,10 +10,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,10 +29,19 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        // Schedule a notification to be sent after 10 seconds
+        /*Handler(Looper.getMainLooper()).postDelayed({
+            val notificationService = MyFirebaseMessagingService()
+            notificationService.generateNotification(this,"Test Notification", "This is a test notification.")
+        }, 10000) // 10000 milliseconds = 10 seconds*/
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContainer) as NavHostFragment
 
         navController = navHostFragment.navController
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         setupWithNavController(bottomNavView, navController)
+
+        //val workRequest = PeriodicWorkRequestBuilder<AppointmentReminderWorker>(1, TimeUnit.DAYS).build()
+        //WorkManager.getInstance(this).enqueue(workRequest)
     }
 }

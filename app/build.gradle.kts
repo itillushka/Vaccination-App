@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.play.services.auth)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -60,7 +61,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
     implementation("fr.tvbarthel.blurdialogfragment:lib:2.2.0")
-
+    // Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("mysql:mysql-connector-java:5.1.26")
 
 

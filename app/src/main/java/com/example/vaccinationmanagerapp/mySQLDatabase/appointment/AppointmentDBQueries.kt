@@ -139,4 +139,15 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         return result
     }
 
+    fun getAppointmentDate(firebase_user_id: String): Date? {
+        val call = "{CALL getAppointmentDate(?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebase_user_id)
+        val resultSet = statement.executeQuery()
+        return if (resultSet.next()) {
+            resultSet.getDate("date")
+        } else {
+            null
+        }
+    }
 }

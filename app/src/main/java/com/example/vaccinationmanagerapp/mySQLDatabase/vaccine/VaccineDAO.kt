@@ -8,4 +8,6 @@ interface VaccineDAO {
     fun deleteVaccine(vaccine: Vaccine): Boolean
 
     fun getAllVaccines(): List<String>
+
+    fun deleteVaccineByName(vaccine_name : String) : Boolean
 }

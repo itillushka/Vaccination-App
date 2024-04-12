@@ -39,4 +39,12 @@ class VaccineDBQueries(private val connection: Connection) : VaccineDAO {
 
         return vaccineNames
 }
+    override fun deleteVaccineByName(vaccine_name: String): Boolean {
+        val call = "{CALL deleteVaccineByName(?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, vaccine_name)
+        val result = !statement.execute()
+        statement.close()
+        return result
+    }
 }
