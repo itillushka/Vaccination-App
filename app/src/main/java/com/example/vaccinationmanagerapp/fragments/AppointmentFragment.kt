@@ -9,13 +9,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.SetAppointmentActivity
 import com.example.vaccinationmanagerapp.adapters.AppointmentItem
 import com.example.vaccinationmanagerapp.adapters.AppointmentsListAdapter
+import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
+import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
+import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.status
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,29 +66,80 @@ class AppointmentFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Create dummy list of appointments
-        val appointmentList = listOf(
-            AppointmentItem("Vaccine name: Hepatitis B"),
-            AppointmentItem("Vaccine name: Hepatitis A"),
-            AppointmentItem("Vaccine name: Rotavirus"),
-        )
-
         val recyclerView: RecyclerView = view.findViewById(R.id.recycleViewAppointments)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = AppointmentsListAdapter(appointmentList)
+        // Fetch the appointments from the database
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+        var firebaseUserId : String = ""
+        if (firebaseUser != null) {
+            firebaseUserId = firebaseUser.uid
+        }
+        // Start a new coroutine without blocking the current thread
+        lifecycleScope.launch(Dispatchers.IO) {
+            val connection = DBconnection.getConnection()
+            val dbQueries = AppointmentDBQueries(connection)
+            val appointments = dbQueries.getAppointmentsByUser(firebaseUserId)
+            connection.close()
+
+            // Convert the appointments into AppointmentItem objects
+            val appointmentItems = appointments.map { appointment ->
+                AppointmentItem(
+                    appointment_id = appointment.appointment_id!!,
+                    vaccine_name = appointment.vaccine_name.toString(),
+                    date = appointment.date.toString(),
+                    dose = appointment.dose ?: 0,
+                    status = appointment.status ?: status.Scheduled
+                )
+            }
+
+            // Update the RecyclerView adapter on the main thread
+            withContext(Dispatchers.Main) {
+                recyclerView.adapter = AppointmentsListAdapter(appointmentItems)
+            }
+        }
+        val updateButton: ImageButton = view.findViewById(R.id.updateButton)
+        updateButton.setOnClickListener {
+            updateAppointmentsList()
+        }
+
+
+    }
+    private fun updateAppointmentsList() {
+        val recyclerView: RecyclerView = view?.findViewById(R.id.recycleViewAppointments) ?: return
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+        var firebaseUserId : String = ""
+        if (firebaseUser != null) {
+            firebaseUserId = firebaseUser.uid
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val connection = DBconnection.getConnection()
+            val dbQueries = AppointmentDBQueries(connection)
+            val appointments = dbQueries.getAppointmentsByUser(firebaseUserId)
+            connection.close()
+
+            val appointmentItems = appointments.map { appointment ->
+                AppointmentItem(
+                    appointment_id = appointment.appointment_id!!,
+                    vaccine_name = appointment.vaccine_name.toString(),
+                    date = appointment.date.toString(),
+                    dose = appointment.dose ?: 0,
+                    status = appointment.status ?: status.Scheduled
+                )
+            }
+
+            withContext(Dispatchers.Main) {
+                recyclerView.adapter = AppointmentsListAdapter(appointmentItems)
+            }
+        }
     }
 
 
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AppointmentFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             AppointmentFragment().apply {

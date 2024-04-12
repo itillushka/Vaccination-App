@@ -23,4 +23,20 @@ class VaccineDBQueries(private val connection: Connection) : VaccineDAO {
         statement.close()
         return result
     }
+
+    override fun getAllVaccines(): List<String> {
+        val call = "SELECT vaccine_name FROM Vaccine"
+        val statement = connection.createStatement()
+        val resultSet = statement.executeQuery(call)
+
+        val vaccineNames = mutableListOf<String>()
+        while (resultSet.next()) {
+            vaccineNames.add(resultSet.getString("vaccine_name"))
+        }
+
+        resultSet.close()
+        statement.close()
+
+        return vaccineNames
+}
 }
