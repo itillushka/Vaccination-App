@@ -37,7 +37,17 @@ class AddRecordActivity : AppCompatActivity() {
         }
         val space = resources.getDimensionPixelSize(R.dimen.item_space)
 
-        val vaccineTypes = listOf("Polio", "Rotavirus", "Chickenpox", "MMR","Meningococcal", "Influenza", "DTaP", "Hepatitis A", "HPV")
+        val vaccineTypes = listOf(
+            Pair("Polio", true),
+            Pair("Rotavirus", true),
+            Pair("Chickenpox", false),
+            Pair("MMR", true),
+            Pair("Meningococcal", false),
+            Pair("Influenza", true),
+            Pair("DTaP", true),
+            Pair("Hepatitis A", true),
+            Pair("HPV", false)
+        )
         val vaccineTypeAdapter = VaccineTypeAdapter(vaccineTypes)
         val vaccineTypeRecyclerView = findViewById<RecyclerView>(R.id.vaccineTypeRecyclerView1)
         vaccineTypeRecyclerView.adapter = vaccineTypeAdapter
