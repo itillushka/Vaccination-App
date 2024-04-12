@@ -4,6 +4,7 @@ import com.example.vaccinationmanagerapp.mySQLDatabase.users.Users
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.gender
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.role
+import com.example.vaccinationmanagerapp.mySQLDatabase.vaccine.VaccineDBQueries
 
 /*fun main() {
     try {
@@ -21,7 +22,7 @@ import com.example.vaccinationmanagerapp.mySQLDatabase.users.role
     }
 }*/
 
-fun main(){
+/*fun main(){
     val firebaseUserId = "someID"
 
     // Getting connection using DBConnection class
@@ -33,6 +34,16 @@ fun main(){
 
     // Inserting the new user into the database
     dbQueries.insertRegisterUser(newUser)
+
+    connection.close()
+}*/
+
+fun main(){
+    val connection = DBconnection.getConnection()
+    val dbQueries = VaccineDBQueries(connection)
+
+    // Inserting the new user into the database
+    dbQueries.getAllVaccines().forEach { println(it) }
 
     connection.close()
 }

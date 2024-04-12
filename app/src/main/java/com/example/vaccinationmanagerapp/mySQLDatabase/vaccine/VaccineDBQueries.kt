@@ -24,6 +24,21 @@ class VaccineDBQueries(private val connection: Connection) : VaccineDAO {
         return result
     }
 
+    override fun getAllVaccines(): List<String> {
+        val call = "SELECT vaccine_name FROM Vaccine"
+        val statement = connection.createStatement()
+        val resultSet = statement.executeQuery(call)
+
+        val vaccineNames = mutableListOf<String>()
+        while (resultSet.next()) {
+            vaccineNames.add(resultSet.getString("vaccine_name"))
+        }
+
+        resultSet.close()
+        statement.close()
+
+        return vaccineNames
+}
     override fun deleteVaccineByName(vaccine_name: String): Boolean {
         val call = "{CALL deleteVaccineByName(?)}"
         val statement = connection.prepareCall(call)
