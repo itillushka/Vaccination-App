@@ -27,9 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-
-            android:fontFamily="@font/inter_semibold"
             android:text="Your Profile"
+            android:fontFamily="@font/inter_semibold"
+
             android:textColor="@color/white"
 
             android:textSize="20dp"
@@ -116,11 +116,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="29dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="120dp"
-
-            android:fontFamily="@font/poppins_regular"
             android:text="Phone Number:"
+            android:fontFamily="@font/poppins_regular"
             android:textColor="@color/text_gray"
             android:textSize="12dp"
             app:layout_constraintEnd_toEndOf="@+id/imageView6"
@@ -128,44 +127,30 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewUserName" />
 
         <TextView
-            android:id="@+id/textViewStatic2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/poppins_regular"
-            android:text="Email Address:"
-            android:textColor="@color/text_gray"
-            android:textSize="12dp"
-            app:layout_constraintEnd_toEndOf="@+id/imageView6"
-            app:layout_constraintHorizontal_bias="0.559"
-            app:layout_constraintStart_toStartOf="@+id/imageView6"
-            app:layout_constraintTop_toBottomOf="@+id/textViewStatic1" />
-
-        <TextView
             android:id="@+id/textViewStatic3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/poppins_regular"
             android:text="Age:"
             android:textColor="@color/text_gray"
             android:textSize="12dp"
             app:layout_constraintEnd_toEndOf="@+id/imageView6"
-            app:layout_constraintHorizontal_bias="0.458"
+            app:layout_constraintHorizontal_bias="0.455"
             app:layout_constraintStart_toStartOf="@+id/imageView6"
-            app:layout_constraintTop_toBottomOf="@+id/textViewStatic2" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewStatic1" />
 
         <TextView
             android:id="@+id/textViewStatic4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="Gender:"
             android:fontFamily="@font/poppins_regular"
             android:textColor="@color/text_gray"
             android:textSize="12dp"
             app:layout_constraintEnd_toEndOf="@+id/imageView6"
-            app:layout_constraintHorizontal_bias="0.487"
+            app:layout_constraintHorizontal_bias="0.485"
             app:layout_constraintStart_toStartOf="@+id/imageView6"
             app:layout_constraintTop_toBottomOf="@+id/textViewStatic3" />
 
@@ -236,13 +221,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:text="Add phone number"
             android:fontFamily="@font/poppins_regular"
+            android:text="Add more information"
             android:textColor="@color/text_gray"
             android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView9"
             app:layout_constraintEnd_toEndOf="@+id/imageView9"
-            app:layout_constraintHorizontal_bias="0.211"
+            app:layout_constraintHorizontal_bias="0.221"
             app:layout_constraintStart_toStartOf="@+id/imageView9"
             app:layout_constraintTop_toBottomOf="@+id/textViewStatic10"
             app:layout_constraintVertical_bias="0.0" />
@@ -290,6 +275,7 @@
             android:text="Logout"
             android:textColor="@color/text_gray"
             android:textSize="12dp"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="@+id/imageView5"
             app:layout_constraintEnd_toEndOf="@+id/imageView5"
             app:layout_constraintHorizontal_bias="0.0"
@@ -317,6 +303,7 @@
             android:layout_marginStart="63dp"
             android:layout_marginTop="14dp"
             android:src="@drawable/logout_icon"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="@+id/imageView5"
             app:layout_constraintStart_toStartOf="@+id/imageView5"
             app:layout_constraintTop_toBottomOf="@+id/imageView10"
@@ -339,9 +326,8 @@
             android:layout_height="18dp"
             android:src="@drawable/right_arrow_icon"
             app:layout_constraintBottom_toBottomOf="@+id/textViewStatic11"
-            app:layout_constraintEnd_toEndOf="@+id/imageView9"
-            app:layout_constraintHorizontal_bias="0.702"
-            app:layout_constraintStart_toEndOf="@+id/textViewStatic11"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewPassword"
+            app:layout_constraintStart_toStartOf="@+id/imageViewPassword"
             app:layout_constraintTop_toTopOf="@+id/textViewStatic11"
             app:layout_constraintVertical_bias="0.0" />
 
@@ -367,6 +353,42 @@
             app:layout_constraintHorizontal_bias="0.659"
             app:layout_constraintStart_toEndOf="@+id/textViewStatic12"
             app:layout_constraintTop_toTopOf="@+id/textViewStatic12" />
+
+        <TextView
+            android:id="@+id/textViewPhoneProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/text_gray"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewStatic1"
+            app:layout_constraintStart_toEndOf="@+id/textViewStatic1"
+            app:layout_constraintTop_toTopOf="@+id/textViewStatic1" />
+
+        <TextView
+            android:id="@+id/textViewAgeProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/text_gray"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewStatic3"
+            app:layout_constraintStart_toEndOf="@+id/textViewStatic3"
+            app:layout_constraintTop_toTopOf="@+id/textViewStatic3" />
+
+        <TextView
+            android:id="@+id/textViewGenderProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/text_gray"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewStatic4"
+            app:layout_constraintStart_toEndOf="@+id/textViewStatic4"
+            app:layout_constraintTop_toTopOf="@+id/textViewStatic4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
