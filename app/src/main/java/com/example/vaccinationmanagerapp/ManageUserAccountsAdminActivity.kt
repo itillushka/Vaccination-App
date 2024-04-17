@@ -28,6 +28,11 @@ class ManageUserAccountsAdminActivity : AppCompatActivity() {
         val userRoleSpinner = findViewById<Spinner>(R.id.spinner)
         val applyButton = findViewById<Button>(R.id.button3)
 
+        val imageViewBack = findViewById<ImageView>(R.id.imageViewBack1)
+        imageViewBack.setOnClickListener {
+            finish()
+        }
+
         val userRoles = arrayOf("READER", "ADMIN")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, userRoles)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

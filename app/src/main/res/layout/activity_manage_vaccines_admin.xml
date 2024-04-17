@@ -159,15 +159,26 @@
         android:id="@+id/button2"
         android:layout_width="288dp"
         android:layout_height="44dp"
-        android:text="Apply"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/gradient_rounded_button"
         android:fontFamily="@font/poppins_semibold"
+        android:text="Apply"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="13dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewBack2"
+        android:layout_width="32dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView16" />
+        app:layout_constraintTop_toTopOf="@+id/textView8"
+        app:srcCompat="@drawable/left_arrow_icon_white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
