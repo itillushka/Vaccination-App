@@ -213,6 +213,7 @@ class AddMoreInfoDialogFragment : DialogFragment() {
         val editTextAddInfoAge = view.findViewById<EditText>(R.id.editTextAddInfoAge)
         // Get the confirm button from the popup view
         val buttonConfirm = view.findViewById<Button>(R.id.buttonConfirmAddInfoPopup)
+        val buttonClose = view.findViewById<Button>(R.id.buttonCloseAddInfoPopup)
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(
@@ -263,6 +264,12 @@ class AddMoreInfoDialogFragment : DialogFragment() {
 
             dismiss()
         }
+
+        buttonClose.setOnClickListener {
+            // Dismiss the popup window when the close button is clicked
+            dismiss()
+        }
+
     }
     suspend fun updateAddInfoUser(phone_number : String, age: String, userGender: String){
         withContext(Dispatchers.IO) {

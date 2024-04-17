@@ -77,5 +77,24 @@ class UsersDBQueries(private val connection: Connection) : UsersDAO {
     return role
 }
 
+    override fun changeUserRoleByUserId(userId: String, role: String): Boolean {
+    val call = "{CALL changeUserRoleByUserId(?, ?)}"
+    val statement = connection.prepareCall(call)
+    statement.setInt(1, userId.toInt())
+    statement.setString(2, role)
+    val result = !statement.execute()
+    statement.close()
+    return result
+}
+
+override fun deleteUserByUserId(userId: String): Boolean {
+    val call = "{CALL deleteUserByUserId(?)}"
+    val statement = connection.prepareCall(call)
+    statement.setInt(1, userId.toInt())
+    val result = !statement.execute()
+    statement.close()
+    return result
+}
+
 
 }
