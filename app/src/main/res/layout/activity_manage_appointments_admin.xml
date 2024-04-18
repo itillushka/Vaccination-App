@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/buttonSearch"
         android:layout_width="wrap_content"
         android:layout_height="44dp"
         android:layout_marginStart="20dp"
@@ -112,5 +112,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView17"
         app:srcCompat="@drawable/left_arrow_icon_white" />
+
+    <EditText
+        android:id="@+id/editTextText6"
+        android:layout_width="322dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/fancy_edittext"
+        android:ems="10"
+        android:fontFamily="@font/inter_regular"
+        android:hint="Vaccine name"
+        android:inputType="text"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textColor="@color/text_gray"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="@+id/editTextTime"
+        app:layout_constraintStart_toStartOf="@+id/editTextTime"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTime" />
+
+    <EditText
+        android:id="@+id/editTextDate"
+        android:layout_width="322dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/fancy_edittext"
+        android:ems="10"
+        android:fontFamily="@font/inter_regular"
+        android:hint="Date"
+        android:inputType="date"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textSize="13dp"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toEndOf="@+id/imageView22"
+        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintStart_toStartOf="@+id/imageView22"
+        app:layout_constraintTop_toBottomOf="@+id/imageView22" />
+
+    <EditText
+        android:id="@+id/editTextTime"
+        android:layout_width="322dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/fancy_edittext"
+        android:ems="10"
+        android:fontFamily="@font/inter_regular"
+        android:hint="Time"
+        android:inputType="time"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textSize="13dp"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toEndOf="@+id/editTextDate"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextDate"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
