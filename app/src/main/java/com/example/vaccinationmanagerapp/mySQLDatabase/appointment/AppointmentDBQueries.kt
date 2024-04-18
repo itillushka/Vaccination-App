@@ -30,10 +30,10 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
 
     }
 
-    override fun deleteAppointment(appointment: Appointment): Boolean {
+    override fun deleteAppointment(appointment_id: Int): Boolean {
         val call = "{CALL deleteAppointment(?)}"
         val statement = connection.prepareCall(call)
-        appointment.appointment_id?.let { statement.setInt(1, it) }
+        statement.setInt(1, appointment_id)
         val result = !statement.execute()
         statement.close()
         return result
@@ -114,6 +114,28 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         statement.close()
         return appointments
     }
+
+    fun getRecordsByUser(firebase_user_id: String): List<Appointment> {
+        val appointments = mutableListOf<Appointment>()
+        val call = "{CALL fetchUserRecords(?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebase_user_id)
+        val result = statement.executeQuery()
+        while (result.next()) {
+            val appointment = Appointment(
+                appointment_id = result.getInt("appointment_id"),
+                user_id = result.getInt("user_id"),
+                vaccine_id = result.getInt("vaccine_id"),
+                status = status.valueOf(result.getString("status")),
+                dose = result.getInt("dose"),
+                date = result.getTimestamp("date"),
+                vaccine_name = result.getString("vaccine_name")
+            )
+            appointments.add(appointment)
+        }
+        statement.close()
+        return appointments
+    }
     fun hasActiveAppointment(firebase_user_id: String, vaccine_name: String): Boolean {
         val query = """
             SELECT COUNT(*) as count
@@ -139,6 +161,34 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         return result
     }
 
+    override fun fetchAppointmentDetails(appointment_id: Int): List<String> {
+        val call = "{CALL fetchAppointmentDetails(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"
+        val statement = connection.prepareCall(call)
+        appointment_id.let { statement.setInt(1, it) }
+        statement.registerOutParameter(2, java.sql.Types.INTEGER)
+        statement.registerOutParameter(3, java.sql.Types.INTEGER)
+        statement.registerOutParameter(4, java.sql.Types.VARCHAR)
+        statement.registerOutParameter(5, java.sql.Types.VARCHAR)
+        statement.registerOutParameter(6, java.sql.Types.INTEGER)
+        statement.registerOutParameter(7, java.sql.Types.VARCHAR)
+        statement.registerOutParameter(8, java.sql.Types.TIMESTAMP)
+        statement.registerOutParameter(9, java.sql.Types.INTEGER)
+        statement.registerOutParameter(10, java.sql.Types.VARCHAR)
+        statement.execute()
+        val details = listOf(
+            statement.getTimestamp(8).toString().substring(0, 10), // Date
+            statement.getTimestamp(8).toString().substring(11, 16), // Time
+            statement.getString(4), // Name
+            statement.getInt(6).toString(), // Age
+            statement.getInt(9).toString(), // Dose
+            statement.getString(5), // Gender
+            statement.getString(7), // Vaccine Name
+            statement.getString(10).toString() // Status
+        )
+        statement.close()
+        return details
+    }
+
     fun getAppointmentDate(firebase_user_id: String): Date? {
         val call = "{CALL getAppointmentDate(?)}"
         val statement = connection.prepareCall(call)
@@ -149,5 +199,90 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         } else {
             null
         }
+    }
+    fun addVaccinationRecord(firebase_user_id: String, vaccine_name: String, dose: Int, date: String): Boolean {
+        val userIdQuery = """
+        SELECT user_id FROM Users WHERE firebase_user_id = ?
+        """
+        val userIdStatement = connection.prepareStatement(userIdQuery)
+        userIdStatement.setString(1, firebase_user_id)
+        val userIdResult = userIdStatement.executeQuery()
+        val user_id = if (userIdResult.next()) userIdResult.getInt("user_id") else return false
+
+        val vaccineIdQuery = """
+        SELECT vaccine_id FROM Vaccine WHERE vaccine_name = ?
+        """
+        val vaccineIdStatement = connection.prepareStatement(vaccineIdQuery)
+        vaccineIdStatement.setString(1, vaccine_name)
+        val vaccineIdResult = vaccineIdStatement.executeQuery()
+        val vaccine_id = if (vaccineIdResult.next()) vaccineIdResult.getInt("vaccine_id") else return false
+
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm")
+        val utilDate = format.parse(date)
+        val sqlTimestamp = Timestamp(utilDate.time)
+
+        val appointment = Appointment(
+            user_id = user_id,
+            vaccine_id = vaccine_id,
+            status = status.Completed,
+            dose = dose,
+            date = sqlTimestamp
+        )
+
+        return insertAppointment(appointment)
+    }
+    fun getDoseByUserAndVaccine(firebase_user_id: String, vaccine_name: String): Int? {
+        val userIdQuery = """
+        SELECT user_id FROM Users WHERE firebase_user_id = ?
+        """
+        val userIdStatement = connection.prepareStatement(userIdQuery)
+        userIdStatement.setString(1, firebase_user_id)
+        val userIdResult = userIdStatement.executeQuery()
+        val user_id = if (userIdResult.next()) userIdResult.getInt("user_id") else return 0
+
+        val vaccineIdQuery = """
+        SELECT vaccine_id FROM Vaccine WHERE vaccine_name = ?
+        """
+        val vaccineIdStatement = connection.prepareStatement(vaccineIdQuery)
+        vaccineIdStatement.setString(1, vaccine_name)
+        val vaccineIdResult = vaccineIdStatement.executeQuery()
+        val vaccine_id = if (vaccineIdResult.next()) vaccineIdResult.getInt("vaccine_id") else return 0
+
+        val sql = "SELECT dose FROM Appointment WHERE user_id = ? AND vaccine_id = ?"
+        val preparedStatement = connection.prepareStatement(sql)
+        preparedStatement.setInt(1, user_id)
+        preparedStatement.setInt(2, vaccine_id)
+        val resultSet = preparedStatement.executeQuery()
+
+        return if (resultSet.next()) {
+            resultSet.getInt("dose")
+        } else {
+            null
+        }
+    }
+
+    fun updateDoseByUserAndVaccine(firebase_user_id: String, vaccine_name: String, newDose: Int) {
+        val userIdQuery = """
+        SELECT user_id FROM Users WHERE firebase_user_id = ?
+        """
+        val userIdStatement = connection.prepareStatement(userIdQuery)
+        userIdStatement.setString(1, firebase_user_id)
+        val userIdResult = userIdStatement.executeQuery()
+        val user_id = if (userIdResult.next()) userIdResult.getInt("user_id") else return
+
+        val vaccineIdQuery = """
+        SELECT vaccine_id FROM Vaccine WHERE vaccine_name = ?
+        """
+        val vaccineIdStatement = connection.prepareStatement(vaccineIdQuery)
+        vaccineIdStatement.setString(1, vaccine_name)
+        val vaccineIdResult = vaccineIdStatement.executeQuery()
+        val vaccine_id = if (vaccineIdResult.next()) vaccineIdResult.getInt("vaccine_id") else return
+
+        val sql = "UPDATE Appointment SET dose = ? WHERE user_id = ? AND vaccine_id = ?"
+        val preparedStatement = connection.prepareStatement(sql)
+        preparedStatement.setInt(1, newDose)
+        preparedStatement.setInt(2, user_id)
+        preparedStatement.setInt(3, vaccine_id)
+        preparedStatement.executeUpdate()
     }
 }

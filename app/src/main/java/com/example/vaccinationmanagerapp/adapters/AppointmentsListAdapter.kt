@@ -40,7 +40,8 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
         init {
             val seeDetailsButton: Button = itemView.findViewById(R.id.seeDetailsButton)
             seeDetailsButton.setOnClickListener {
-                val dialogFragment = AppointmentDetailsDialogFragment()
+                val appointment_id = appointmentList[adapterPosition].appointment_id
+                val dialogFragment = AppointmentDetailsDialogFragment(appointment_id)
                 val fragmentManager = (itemView.context as AppCompatActivity).supportFragmentManager
                 dialogFragment.show(fragmentManager, "AppointmentDetailsDialogFragment")
             }

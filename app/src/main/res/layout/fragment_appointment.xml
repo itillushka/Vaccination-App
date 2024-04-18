@@ -66,13 +66,13 @@
             android:layout_height="wrap_content"
             android:backgroundTint="#00FFFFFF"
             android:contentDescription="sort"
-            android:src="@drawable/sort_icon"
+            android:src="@drawable/update_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/vaccinRecBg"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/setAppointmentButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.096" />
+            app:layout_constraintVertical_bias="0.097" />
 
         <LinearLayout
             android:layout_width="379dp"
@@ -90,6 +90,7 @@
                 android:layout_height="match_parent" />
 
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

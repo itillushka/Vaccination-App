@@ -1,5 +1,6 @@
 package com.example.vaccinationmanagerapp.mySQLDatabase
 
+import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.Users
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.gender
@@ -38,12 +39,27 @@ import com.example.vaccinationmanagerapp.mySQLDatabase.vaccine.VaccineDBQueries
     connection.close()
 }*/
 
-fun main(){
+
+
+fun testFetchAppointmentDetails() {
+    // Initialize the database connection and queries
     val connection = DBconnection.getConnection()
-    val dbQueries = VaccineDBQueries(connection)
+    val dbQueries = AppointmentDBQueries(connection)
 
-    // Inserting the new user into the database
-    dbQueries.getAllVaccines().forEach { println(it) }
+    // Use a known appointment_id for testing
+    val appointment_id = 2
 
+    // Call the fetchAppointmentDetails function
+    val details = dbQueries.fetchAppointmentDetails(appointment_id)
+
+    // Print the details
+    println(details)
+
+    // Close the connection
     connection.close()
 }
+
+fun main(){
+
+// Call the test function
+testFetchAppointmentDetails()}

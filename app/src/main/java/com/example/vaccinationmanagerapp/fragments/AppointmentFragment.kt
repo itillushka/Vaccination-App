@@ -4,12 +4,15 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -150,7 +153,7 @@ class AppointmentFragment : Fragment() {
             }
     }
 }
-class AppointmentDetailsDialogFragment : DialogFragment() {
+class AppointmentDetailsDialogFragment(private val appointment_id: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -161,6 +164,42 @@ class AppointmentDetailsDialogFragment : DialogFragment() {
             val closeButton: Button = view.findViewById(R.id.closeButtonAppmDetails)
             closeButton.setOnClickListener {
                 dismiss()
+            }
+            Log.d("appm_id", "appm_id: $appointment_id")
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val connection = DBconnection.getConnection()
+                val dbQueries = AppointmentDBQueries(connection)
+                val details = dbQueries.fetchAppointmentDetails(appointment_id)
+                connection.close()
+
+                withContext(Dispatchers.Main) {
+                    val dateView: TextView = view.findViewById(R.id.dateAppmDetails)
+                    val timeView: TextView = view.findViewById(R.id.timeAppmDetails)
+                    val nameView: TextView = view.findViewById(R.id.fullName)
+                    val ageView: TextView = view.findViewById(R.id.age)
+                    val doseView: TextView = view.findViewById(R.id.dose)
+                    val genderView: TextView = view.findViewById(R.id.gender)
+                    val vaccineNameView: TextView = view.findViewById(R.id.vaccineName)
+                    val statusImage: ImageView = view.findViewById(R.id.appmDetailsStatus)
+
+                    dateView.text = details[0]
+                    timeView.text = details[1]
+                    nameView.text = details[2]
+                    ageView.text = details[3]
+                    doseView.text = details[4]
+                    genderView.text = details[5]
+                    vaccineNameView.text = details[6]
+                    val status = details[7]
+                    if (status == "Completed") {
+                        statusImage.setImageResource(R.drawable.completed_appm_icon)
+                    } else if (status == "Canceled") {
+                        statusImage.setImageResource(R.drawable.canceled_appm_icon)
+                    } else {
+                        statusImage.setImageResource(R.drawable.upcoming_appm_icon)
+                    }
+
+                }
             }
 
             builder.setView(view)

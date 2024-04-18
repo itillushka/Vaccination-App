@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.adapters.TimeSlotAdapter
 import com.example.vaccinationmanagerapp.adapters.VaccineTypeAdapter
@@ -125,6 +126,11 @@ class SetAppointmentActivity : AppCompatActivity() {
 
                 val result = dbQueries.createAppointment(selectedVaccineType!!, selectedDate, firebaseUserId)
 
+
+                // If the appointment is successfully created, update the vaccine dose
+                if (result) {
+                    setAppointmentDose(firebaseUserId, selectedVaccineType)
+                }
                 connection.close()
 
                 if (result) {
@@ -136,5 +142,19 @@ class SetAppointmentActivity : AppCompatActivity() {
             }}
         }
     }
+    private fun setAppointmentDose(firebaseUserId: String, vaccineName: String) {
+    lifecycleScope.launch(Dispatchers.IO) {
+        val connection = DBconnection.getConnection()
+        val dbQueries = AppointmentDBQueries(connection)
+
+        val currentDose = dbQueries.getDoseByUserAndVaccine(firebaseUserId, vaccineName)
+
+        val newDose = currentDose?.plus(1) ?: 1
+
+        dbQueries.updateDoseByUserAndVaccine(firebaseUserId, vaccineName, newDose)
+
+        connection.close()
+    }
+}
 
 }
