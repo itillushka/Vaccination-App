@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView12"
+            android:id="@+id/appmDetailsStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/bg_appointment"
@@ -26,12 +26,12 @@
             android:id="@+id/imageView13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/sort_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView12"
-            app:layout_constraintEnd_toEndOf="@+id/imageView12"
+            android:src="@drawable/update_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/appmDetailsStatus"
+            app:layout_constraintEnd_toEndOf="@+id/appmDetailsStatus"
             app:layout_constraintHorizontal_bias="0.885"
-            app:layout_constraintStart_toStartOf="@+id/imageView12"
-            app:layout_constraintTop_toTopOf="@+id/imageView12"
+            app:layout_constraintStart_toStartOf="@+id/appmDetailsStatus"
+            app:layout_constraintTop_toTopOf="@+id/appmDetailsStatus"
             app:layout_constraintVertical_bias="0.36" />
 
         <TextView
@@ -42,11 +42,11 @@
             android:text="Your Notifications"
             android:textColor="@color/white"
             android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView12"
-            app:layout_constraintEnd_toEndOf="@+id/imageView12"
+            app:layout_constraintBottom_toBottomOf="@+id/appmDetailsStatus"
+            app:layout_constraintEnd_toEndOf="@+id/appmDetailsStatus"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView12"
+            app:layout_constraintTop_toTopOf="@+id/appmDetailsStatus"
             app:layout_constraintVertical_bias="0.091" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -57,7 +57,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.514"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView12"
+            app:layout_constraintTop_toTopOf="@+id/appmDetailsStatus"
             app:layout_constraintVertical_bias="0.228" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -80,9 +80,9 @@
             android:textColor="@color/white"
             android:textSize="16dp"
             app:layout_constraintBottom_toTopOf="@+id/recentNotificationsRecyclerView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView12"
+            app:layout_constraintEnd_toEndOf="@+id/appmDetailsStatus"
             app:layout_constraintHorizontal_bias="0.099"
-            app:layout_constraintStart_toStartOf="@+id/imageView12" />
+            app:layout_constraintStart_toStartOf="@+id/appmDetailsStatus" />
 
         <TextView
             android:id="@+id/textView7"
