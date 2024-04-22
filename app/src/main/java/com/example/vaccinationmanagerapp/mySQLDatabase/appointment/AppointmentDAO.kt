@@ -11,4 +11,7 @@ interface AppointmentDAO {
     fun cancelAppointment(appointment_id: Int): Boolean
 
     fun fetchAppointmentDetails(appointment_id: Int) : List<String>
+
+    fun fetchAppointmentByIdAdmin(appointment_id: Int): List<String>?
+
 }

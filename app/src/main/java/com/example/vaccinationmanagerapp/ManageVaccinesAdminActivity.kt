@@ -3,6 +3,7 @@ package com.example.vaccinationmanagerapp
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Switch
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -32,6 +33,11 @@ class ManageVaccinesAdminActivity : AppCompatActivity() {
         val numberOfDosesEditText = findViewById<EditText>(R.id.editTextText2)
         val timeBetweenDosesEditText = findViewById<EditText>(R.id.editTextText3)
         val applyButton = findViewById<Button>(R.id.button2)
+
+        val imageViewBack = findViewById<ImageView>(R.id.imageViewBack2)
+        imageViewBack.setOnClickListener {
+            finish()
+        }
 
         switch.setOnCheckedChangeListener { _, isChecked ->
             numberOfDosesEditText.isEnabled = !isChecked

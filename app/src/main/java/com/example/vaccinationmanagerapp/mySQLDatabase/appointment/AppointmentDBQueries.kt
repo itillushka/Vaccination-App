@@ -8,6 +8,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO {
 
@@ -192,6 +193,31 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         statement.close()
         return details
     }
+    
+    override fun fetchAppointmentByIdAdmin(appointment_id: Int): List<String>? {
+        var appointment: List<String>? = null
+    try {
+        val call = "{CALL fetchAppointmentByIdAdmin(?, ?, ?, ?)}"
+        val statement = connection.prepareCall(call)
+        statement.setInt(1, appointment_id)
+        statement.registerOutParameter(2, java.sql.Types.TIMESTAMP)
+        statement.registerOutParameter(3, java.sql.Types.INTEGER)
+        statement.registerOutParameter(4, java.sql.Types.VARCHAR)
+        statement.execute()
+
+        val dateTimestamp = statement.getTimestamp(2)
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY)
+        val date = format.format(dateTimestamp)
+        val time = SimpleDateFormat("HH:mm", Locale.GERMANY).format(dateTimestamp)
+        val vaccineName = statement.getString(4)
+        appointment = listOf(date, time, vaccineName)
+
+        statement.close()
+    } catch (e: SQLException) {
+        e.printStackTrace()
+    }
+    return appointment
+}
 
     fun getAppointmentDate(firebase_user_id: String): Date? {
         val call = "{CALL getAppointmentDate(?)}"
