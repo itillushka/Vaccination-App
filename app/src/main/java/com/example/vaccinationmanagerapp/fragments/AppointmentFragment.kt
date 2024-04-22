@@ -4,12 +4,15 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,6 +64,8 @@ class AppointmentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val setAppointmentButton: Button = view.findViewById(R.id.setAppointmentButton)
+        val emptyBoxImageView: ImageView = view.findViewById(R.id.emptyBox)
+
         setAppointmentButton.setOnClickListener {
             val intent = Intent(activity, SetAppointmentActivity::class.java)
             startActivity(intent)
@@ -93,19 +98,26 @@ class AppointmentFragment : Fragment() {
                 )
             }
 
-            // Update the RecyclerView adapter on the main thread
+
             withContext(Dispatchers.Main) {
-                recyclerView.adapter = AppointmentsListAdapter(appointmentItems)
+                if (appointmentItems.isEmpty()) {
+                    recyclerView.visibility = View.GONE
+                    emptyBoxImageView.visibility = View.VISIBLE
+                } else {
+                    recyclerView.adapter = AppointmentsListAdapter(appointmentItems)
+                    recyclerView.visibility = View.VISIBLE
+                    emptyBoxImageView.visibility = View.GONE
+                }
             }
         }
         val updateButton: ImageButton = view.findViewById(R.id.updateButton)
         updateButton.setOnClickListener {
-            updateAppointmentsList()
+            updateAppointmentsList(emptyBoxImageView)
         }
 
 
     }
-    private fun updateAppointmentsList() {
+    private fun updateAppointmentsList(emptyBoxImageView: ImageView? = null) {
         val recyclerView: RecyclerView = view?.findViewById(R.id.recycleViewAppointments) ?: return
         val firebaseAuth = FirebaseAuth.getInstance()
         val firebaseUser = firebaseAuth.currentUser
@@ -131,7 +143,14 @@ class AppointmentFragment : Fragment() {
             }
 
             withContext(Dispatchers.Main) {
-                recyclerView.adapter = AppointmentsListAdapter(appointmentItems)
+                if (appointmentItems.isEmpty()) {
+                    recyclerView.visibility = View.GONE
+                    emptyBoxImageView!!.visibility = View.VISIBLE
+                } else {
+                    recyclerView.adapter = AppointmentsListAdapter(appointmentItems)
+                    recyclerView.visibility = View.VISIBLE
+                    emptyBoxImageView!!.visibility = View.GONE
+                }
             }
         }
     }
@@ -150,7 +169,7 @@ class AppointmentFragment : Fragment() {
             }
     }
 }
-class AppointmentDetailsDialogFragment : DialogFragment() {
+class AppointmentDetailsDialogFragment(private val appointment_id: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -161,6 +180,42 @@ class AppointmentDetailsDialogFragment : DialogFragment() {
             val closeButton: Button = view.findViewById(R.id.closeButtonAppmDetails)
             closeButton.setOnClickListener {
                 dismiss()
+            }
+            Log.d("appm_id", "appm_id: $appointment_id")
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val connection = DBconnection.getConnection()
+                val dbQueries = AppointmentDBQueries(connection)
+                val details = dbQueries.fetchAppointmentDetails(appointment_id)
+                connection.close()
+
+                withContext(Dispatchers.Main) {
+                    val dateView: TextView = view.findViewById(R.id.dateAppmDetails)
+                    val timeView: TextView = view.findViewById(R.id.timeAppmDetails)
+                    val nameView: TextView = view.findViewById(R.id.fullName)
+                    val ageView: TextView = view.findViewById(R.id.age)
+                    val doseView: TextView = view.findViewById(R.id.dose)
+                    val genderView: TextView = view.findViewById(R.id.gender)
+                    val vaccineNameView: TextView = view.findViewById(R.id.vaccineName)
+                    val statusImage: ImageView = view.findViewById(R.id.appmDetailsStatus)
+
+                    dateView.text = details[0]
+                    timeView.text = details[1]
+                    nameView.text = "Full Name: " + details[2]
+                    ageView.text = "Age: " + details[3]
+                    doseView.text = "Dose: " + details[4]
+                    genderView.text = "Gender: " + details[5]
+                    vaccineNameView.text = "Vaccine Name: " + details[6]
+                    val status = details[7]
+                    if (status == "Completed") {
+                        statusImage.setImageResource(R.drawable.completed_appm_icon)
+                    } else if (status == "Canceled") {
+                        statusImage.setImageResource(R.drawable.canceled_appm_icon)
+                    } else {
+                        statusImage.setImageResource(R.drawable.upcoming_appm_icon)
+                    }
+
+                }
             }
 
             builder.setView(view)

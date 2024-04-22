@@ -7,14 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.AddRecordActivity
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.SetAppointmentActivity
+import com.example.vaccinationmanagerapp.adapters.AppointmentItem
 import com.example.vaccinationmanagerapp.adapters.AppointmentsListAdapter
+import com.example.vaccinationmanagerapp.adapters.RecordItem
 import com.example.vaccinationmanagerapp.adapters.VaccinationHistoryListAdapter
 import com.example.vaccinationmanagerapp.models.VaccinationRecord
+import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
+import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
+import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.status
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,19 +63,90 @@ class RecordsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val addRecordButton: Button = view.findViewById(R.id.addVaccinationButton)
+        val emptyBoxImageView: ImageView = view.findViewById(R.id.emptyBox1)
+
         addRecordButton.setOnClickListener {
             val intent = Intent(activity, AddRecordActivity::class.java)
             startActivity(intent)
         }
-        val recordsList = listOf(
-            VaccinationRecord("Hepatitis A", 1, "April 15, 2023", "after 6-18 months"),
-            VaccinationRecord("Hepatitis B", 2, "May 20, 2023", "after 6-18 months"),
-            VaccinationRecord("Influenza", 1, "June 10, 2023", "after 1 year")
-        )
         val recyclerView: RecyclerView = view.findViewById(R.id.vaccinationRecordsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = VaccinationHistoryListAdapter(recordsList)
 
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+        var firebaseUserId : String = ""
+        if (firebaseUser != null) {
+            firebaseUserId = firebaseUser.uid
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val connection = DBconnection.getConnection()
+            val dbQueries = AppointmentDBQueries(connection)
+            val appointments = dbQueries.getRecordsByUser(firebaseUserId)
+            connection.close()
+
+            val recordItems = appointments.map { appointment ->
+                RecordItem(
+                    appointment_id = appointment.appointment_id!!,
+                    vaccine_name = appointment.vaccine_name.toString(),
+                    date = appointment.date.toString(),
+                    dose = appointment.dose ?: 0,
+                    status = appointment.status ?: status.Completed
+                )
+            }
+            withContext(Dispatchers.Main) {
+                if (recordItems.isEmpty()) {
+                    recyclerView.visibility = View.GONE
+                    emptyBoxImageView.visibility = View.VISIBLE
+                } else {
+                    recyclerView.adapter = VaccinationHistoryListAdapter(recordItems)
+                    recyclerView.visibility = View.VISIBLE
+                    emptyBoxImageView.visibility = View.GONE
+                }
+            }
+        }
+        val updateButton: ImageButton = view.findViewById(R.id.updateButton)
+        updateButton.setOnClickListener {
+            updateAppointmentsList(emptyBoxImageView)
+        }
+
+    }
+    private fun updateAppointmentsList(emptyBoxImageView: ImageView? = null) {
+        val recyclerView: RecyclerView = view?.findViewById(R.id.vaccinationRecordsRecyclerView) ?: return
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+        var firebaseUserId : String = ""
+        if (firebaseUser != null) {
+            firebaseUserId = firebaseUser.uid
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val connection = DBconnection.getConnection()
+            val dbQueries = AppointmentDBQueries(connection)
+            val appointments = dbQueries.getRecordsByUser(firebaseUserId)
+            connection.close()
+
+            val recordItems = appointments.map { appointment ->
+                RecordItem(
+                    appointment_id = appointment.appointment_id!!,
+                    vaccine_name = appointment.vaccine_name.toString(),
+                    date = appointment.date.toString(),
+                    dose = appointment.dose ?: 0,
+                    status = appointment.status ?: status.Completed
+                )
+            }
+
+            withContext(Dispatchers.Main) {
+                if (recordItems.isEmpty()) {
+                    recyclerView.visibility = View.GONE
+                    emptyBoxImageView!!.visibility = View.VISIBLE
+                } else {
+                    recyclerView.adapter = VaccinationHistoryListAdapter(recordItems)
+                    recyclerView.visibility = View.VISIBLE
+                    emptyBoxImageView!!.visibility = View.GONE
+                }
+            }
+        }
     }
 
     companion object {
