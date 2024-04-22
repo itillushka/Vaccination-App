@@ -56,9 +56,11 @@ class ProfileFragment : Fragment() {
                 val textViewAgeProfile = view?.findViewById<TextView>(R.id.textViewAgeProfile)
                 val textViewGenderProfile = view?.findViewById<TextView>(R.id.textViewGenderProfile)
 
-                textViewPhoneProfile?.text = userData[0]
-                textViewAgeProfile?.text = userData[1]
-                textViewGenderProfile?.text = userData[2]
+                if (userData.isNotEmpty()) {
+                    textViewPhoneProfile?.text = userData[0]
+                    textViewAgeProfile?.text = userData[1]
+                    textViewGenderProfile?.text = userData[2]
+                }
             }
         }
     }

@@ -51,9 +51,9 @@ class UsersDBQueries(private val connection: Connection) : UsersDAO {
         val resultSet = statement.executeQuery()
         val result = mutableListOf<String>()
         while (resultSet.next()) {
-            val phoneNumber = resultSet.getString("phone_number")
-            val age = resultSet.getInt("age").toString()
-            val gender = resultSet.getString("gender")
+            val phoneNumber = resultSet.getString("phone_number") ?: ""
+            val age = resultSet.getInt("age").toString() ?: ""
+            val gender = resultSet.getString("gender") ?: ""
             result.add(phoneNumber)
             result.add(age)
             result.add(gender)
