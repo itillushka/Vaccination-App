@@ -74,7 +74,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.097" />
 
+        <ImageView
+            android:id="@+id/emptyBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/empty_box"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/vaccinRecBg" />
+
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="379dp"
             android:layout_height="420dp"
             android:orientation="vertical"
@@ -88,6 +100,7 @@
                 android:id="@+id/recycleViewAppointments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
 
         </LinearLayout>
 

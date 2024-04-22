@@ -7,6 +7,7 @@ import android.widget.CalendarView
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.Calendar
 
 class AddRecordActivity : AppCompatActivity() {
     private var vaccineTypes = mutableListOf<String>()
@@ -40,9 +42,18 @@ class AddRecordActivity : AppCompatActivity() {
         val calendar = findViewById<CalendarView>(R.id.calendarView1)
         val dateView = findViewById<TextView>(R.id.dateView1)
         calendar.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            val date = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+            val selectedDate = Calendar.getInstance()
+            selectedDate.set(year, month, dayOfMonth)
 
-            dateView.text = date
+            val currentDate = Calendar.getInstance()
+
+            if (selectedDate.after(currentDate)) {
+                Toast.makeText(this, "You cannot add record on a future date", Toast.LENGTH_SHORT).show()
+            } else {
+                val date = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+
+                dateView.text = date
+            }
         }
         val space = resources.getDimensionPixelSize(R.dimen.item_space)
 

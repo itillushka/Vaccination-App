@@ -1,5 +1,6 @@
 package com.example.vaccinationmanagerapp.adapters
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -56,6 +57,7 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
         return AppointmentViewHolder(itemView)
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: AppointmentViewHolder, position: Int) {
         val currentItem = appointmentList[position]
         holder.appmName.text = currentItem.vaccine_name
@@ -65,6 +67,9 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
             holder.appointmentStatus.setImageResource(R.drawable.completed_appm_icon)
         } else if (currentItem.status == status.Canceled) {
             holder.appointmentStatus.setImageResource(R.drawable.canceled_appm_icon)
+            holder.cancelBookingButton.setTextColor(R.color.gray)
+            holder.cancelBookingButton.setBackgroundResource(R.drawable.unavailable_button)
+            holder.cancelBookingButton.setText("Canceled")
         } else {
             holder.appointmentStatus.setImageResource(R.drawable.upcoming_appm_icon)
         }
@@ -83,6 +88,9 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
                     withContext(Dispatchers.Main) {
                         holder.appointmentStatus.setImageResource(R.drawable.canceled_appm_icon)
                         currentItem.status = status.Canceled
+                        holder.cancelBookingButton.setTextColor(R.color.gray)
+                        holder.cancelBookingButton.setBackgroundResource(R.drawable.unavailable_button)
+                        holder.cancelBookingButton.setText("Canceled")
                     }
                 } else {
                     // Handle the error

@@ -89,16 +89,16 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
     }
     fun getAppointmentsByUser(firebase_user_id: String): List<Appointment> {
         val appointments = mutableListOf<Appointment>()
-        val query = """
+        var query = """
         SELECT Appointment.*, Vaccine.vaccine_name 
         FROM Appointment 
         INNER JOIN Users ON Appointment.user_id = Users.user_id 
         INNER JOIN Vaccine ON Appointment.vaccine_id = Vaccine.vaccine_id 
         WHERE Users.firebase_user_id = ?
         """
-        val statement = connection.prepareStatement(query)
+        var statement = connection.prepareStatement(query)
         statement.setString(1, firebase_user_id)
-        val result = statement.executeQuery()
+        var result = statement.executeQuery()
         while (result.next()) {
             val appointment = Appointment(
                 appointment_id = result.getInt("appointment_id"),
@@ -111,6 +111,10 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
             )
             appointments.add(appointment)
         }
+        statement.close()
+        query = "{CALL updateStatusToCompleted()}"
+        statement = connection.prepareStatement(query)
+        statement.executeQuery()
         statement.close()
         return appointments
     }

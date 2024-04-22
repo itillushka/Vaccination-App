@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -62,6 +63,8 @@ class RecordsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val addRecordButton: Button = view.findViewById(R.id.addVaccinationButton)
+        val emptyBoxImageView: ImageView = view.findViewById(R.id.emptyBox1)
+
         addRecordButton.setOnClickListener {
             val intent = Intent(activity, AddRecordActivity::class.java)
             startActivity(intent)
@@ -91,18 +94,24 @@ class RecordsFragment : Fragment() {
                     status = appointment.status ?: status.Completed
                 )
             }
-
             withContext(Dispatchers.Main) {
-                recyclerView.adapter = VaccinationHistoryListAdapter(recordItems)
+                if (recordItems.isEmpty()) {
+                    recyclerView.visibility = View.GONE
+                    emptyBoxImageView.visibility = View.VISIBLE
+                } else {
+                    recyclerView.adapter = VaccinationHistoryListAdapter(recordItems)
+                    recyclerView.visibility = View.VISIBLE
+                    emptyBoxImageView.visibility = View.GONE
+                }
             }
         }
         val updateButton: ImageButton = view.findViewById(R.id.updateButton)
         updateButton.setOnClickListener {
-            updateAppointmentsList()
+            updateAppointmentsList(emptyBoxImageView)
         }
 
     }
-    private fun updateAppointmentsList() {
+    private fun updateAppointmentsList(emptyBoxImageView: ImageView? = null) {
         val recyclerView: RecyclerView = view?.findViewById(R.id.vaccinationRecordsRecyclerView) ?: return
         val firebaseAuth = FirebaseAuth.getInstance()
         val firebaseUser = firebaseAuth.currentUser
@@ -128,7 +137,14 @@ class RecordsFragment : Fragment() {
             }
 
             withContext(Dispatchers.Main) {
-                recyclerView.adapter = VaccinationHistoryListAdapter(recordItems)
+                if (recordItems.isEmpty()) {
+                    recyclerView.visibility = View.GONE
+                    emptyBoxImageView!!.visibility = View.VISIBLE
+                } else {
+                    recyclerView.adapter = VaccinationHistoryListAdapter(recordItems)
+                    recyclerView.visibility = View.VISIBLE
+                    emptyBoxImageView!!.visibility = View.GONE
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -25,6 +26,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.sql.Date
+import java.util.Calendar
 
 
 class SetAppointmentActivity : AppCompatActivity() {
@@ -48,11 +50,18 @@ class SetAppointmentActivity : AppCompatActivity() {
         val calendar = findViewById<CalendarView>(R.id.calendarView)
         val dateView = findViewById<TextView>(R.id.dateView)
         calendar.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            // Store the value of date with format in String type Variable
-            // Add 1 in month because month index is start with 0
-            val date = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+            val selectedDate = Calendar.getInstance()
+            selectedDate.set(year, month, dayOfMonth)
 
-            dateView.text = date
+            val currentDate = Calendar.getInstance()
+
+            if (selectedDate.before(currentDate)) {
+                Toast.makeText(this, "You cannot set an appointment on a past date", Toast.LENGTH_SHORT).show()
+            } else {
+                val date = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+
+                dateView.text = date
+            }
         }
         //implementation of time slots recycler view
         val timeSlots = listOf(
@@ -128,9 +137,11 @@ class SetAppointmentActivity : AppCompatActivity() {
 
 
                 // If the appointment is successfully created, update the vaccine dose
-                if (result) {
+               /* if (result) {
                     setAppointmentDose(firebaseUserId, selectedVaccineType)
                 }
+
+                */
                 connection.close()
 
                 if (result) {
@@ -142,7 +153,7 @@ class SetAppointmentActivity : AppCompatActivity() {
             }}
         }
     }
-    private fun setAppointmentDose(firebaseUserId: String, vaccineName: String) {
+   /* private fun setAppointmentDose(firebaseUserId: String, vaccineName: String) {
     lifecycleScope.launch(Dispatchers.IO) {
         val connection = DBconnection.getConnection()
         val dbQueries = AppointmentDBQueries(connection)
@@ -156,5 +167,7 @@ class SetAppointmentActivity : AppCompatActivity() {
         connection.close()
     }
 }
+
+    */
 
 }
