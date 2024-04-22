@@ -8,4 +8,6 @@ interface AppointmentDAO {
 
     fun createAppointment(vaccine_name: String, date: String, firebase_user_id: String): Boolean
     fun cancelAppointment(appointment_id: Int): Boolean
+
+    fun fetchAppointmentByIdAdmin(appointment_id: Int): List<String>?
 }

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -26,7 +27,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-
+import android.app.NotificationManager
+import android.provider.Settings
+import androidx.core.app.NotificationManagerCompat
 class ProfileFragment : Fragment() {
 
     suspend fun fetchUserData() {
@@ -53,9 +56,11 @@ class ProfileFragment : Fragment() {
                 val textViewAgeProfile = view?.findViewById<TextView>(R.id.textViewAgeProfile)
                 val textViewGenderProfile = view?.findViewById<TextView>(R.id.textViewGenderProfile)
 
-                textViewPhoneProfile?.text = userData[0]
-                textViewAgeProfile?.text = userData[1]
-                textViewGenderProfile?.text = userData[2]
+                if (userData.isNotEmpty()) {
+                    textViewPhoneProfile?.text = userData[0]
+                    textViewAgeProfile?.text = userData[1]
+                    textViewGenderProfile?.text = userData[2]
+                }
             }
         }
     }
@@ -78,6 +83,32 @@ class ProfileFragment : Fragment() {
         val imageViewSupport = view.findViewById<ImageView>(R.id.imageViewSupport)
         val imageViewChangePassword = view.findViewById<ImageView>(R.id.imageViewPassword)
         val imageViewAddInfo = view.findViewById<ImageView>(R.id.imageViewPhone)
+
+        val notificationSwitch = view.findViewById<Switch>(R.id.switchNotification)
+        // Initialize the NotificationManagerCompat
+        val notificationManager = NotificationManagerCompat.from(requireContext())
+
+        notificationSwitch.isChecked = true
+
+        notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // If notifications are disabled, navigate to app settings
+                if (!notificationManager.areNotificationsEnabled()) {
+                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                        putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+                    }
+                    startActivity(intent)
+                }
+            } else {
+                // If notifications are enabled, navigate to app settings
+                if (notificationManager.areNotificationsEnabled()) {
+                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                        putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+                    }
+                    startActivity(intent)
+                }
+            }
+        }
 
         imageViewSupport.setOnClickListener {
             val dialog1 = SupportDialogFragment.newInstance()
@@ -213,6 +244,7 @@ class AddMoreInfoDialogFragment : DialogFragment() {
         val editTextAddInfoAge = view.findViewById<EditText>(R.id.editTextAddInfoAge)
         // Get the confirm button from the popup view
         val buttonConfirm = view.findViewById<Button>(R.id.buttonConfirmAddInfoPopup)
+        val buttonClose = view.findViewById<Button>(R.id.buttonCloseAddInfoPopup)
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(
@@ -263,6 +295,12 @@ class AddMoreInfoDialogFragment : DialogFragment() {
 
             dismiss()
         }
+
+        buttonClose.setOnClickListener {
+            // Dismiss the popup window when the close button is clicked
+            dismiss()
+        }
+
     }
     suspend fun updateAddInfoUser(phone_number : String, age: String, userGender: String){
         withContext(Dispatchers.IO) {
