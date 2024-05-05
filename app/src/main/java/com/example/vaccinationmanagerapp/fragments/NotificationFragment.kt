@@ -5,12 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.adapters.AppointmentItem
 import com.example.vaccinationmanagerapp.adapters.NotificationItem
 import com.example.vaccinationmanagerapp.adapters.RecentNotificationsAdapter
+import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.NotificationsDBQueries
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,25 +53,54 @@ class NotificationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recentNotificationsList = listOf(
-            NotificationItem("Vaccination Date",
-                "According to your previous vaccination record your next dose should be in 2 weeks.",
-                "27/03/2024"),
-            NotificationItem("Vaccination Date",
-                "According to your previous vaccination record your next dose should be in 2 weeks.",
-                "29/03/2024"),
-            NotificationItem("Vaccination Date",
-                "According to your previous vaccination record your next dose should be in 2 weeks.",
-                "28/03/2024")
+        // Get the current user's firebase user id
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+        var firebaseUserId : String = ""
+        if (firebaseUser != null) {
+            firebaseUserId = firebaseUser.uid
+        }
 
-        )
-        val recyclerView: RecyclerView = view.findViewById(R.id.recentNotificationsRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = RecentNotificationsAdapter(recentNotificationsList)
+        lifecycleScope.launch(Dispatchers.IO) {
+            // Get the notifications from the database
+            val connection = DBconnection.getConnection()
+            val notificationDBQueries = NotificationsDBQueries(connection)
+            val notifications = notificationDBQueries.getNotifications(firebaseUserId)
 
-        val recyclerView1: RecyclerView = view.findViewById(R.id.allNotificationsRecycleView)
-        recyclerView1.layoutManager = LinearLayoutManager(activity)
-        recyclerView1.adapter = RecentNotificationsAdapter(recentNotificationsList)
+            // Sort the notifications by notification_id in descending order and take the first 3
+            val sortedNotifications = notifications.sortedByDescending { it.notification_id }.take(3)
+
+            // Convert the notifications to NotificationItems
+            val notificationItems = sortedNotifications.map { notification ->
+                NotificationItem(
+                    notification.title ?: "",
+                    notification.description ?: "",
+                    notification.date_sent?.toString()?.substring(0,19) ?: ""
+                )
+            }
+
+            // For all notifications
+            val allNotificationItems = notifications.map { notification ->
+                NotificationItem(
+                    notification.title ?: "",
+                    notification.description ?: "",
+                    notification.date_sent?.toString()?.substring(0,19) ?: ""
+                )
+            }
+
+            withContext(Dispatchers.Main) {
+                // Set up the RecyclerView
+                val recyclerView: RecyclerView = view.findViewById(R.id.recentNotificationsRecyclerView)
+                recyclerView.layoutManager = LinearLayoutManager(activity)
+                recyclerView.adapter = RecentNotificationsAdapter(notificationItems)
+
+                val recyclerView1: RecyclerView = view.findViewById(R.id.allNotificationsRecycleView)
+                recyclerView1.layoutManager = LinearLayoutManager(activity)
+                recyclerView1.adapter = RecentNotificationsAdapter(allNotificationItems)
+            }
+
+            connection.close()
+        }
     }
 
     companion object {

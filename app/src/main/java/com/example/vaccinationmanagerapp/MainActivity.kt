@@ -28,12 +28,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        // Create a PeriodicWorkRequest
+        //val workRequest = PeriodicWorkRequestBuilder<AppointmentReminderWorker>(15, TimeUnit.MINUTES)
+         //   .build()
 
-        // Schedule a notification to be sent after 10 seconds
-        /*Handler(Looper.getMainLooper()).postDelayed({
-            val notificationService = MyFirebaseMessagingService()
-            notificationService.generateNotification(this,"Test Notification", "This is a test notification.")
-        }, 10000) // 10000 milliseconds = 10 seconds*/
+        // Enqueue the work request
+        //WorkManager.getInstance(this).enqueue(workRequest)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContainer) as NavHostFragment
 

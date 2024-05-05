@@ -219,16 +219,16 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
     return appointment
 }
 
-    fun getAppointmentDate(firebase_user_id: String): Date? {
+    fun getAppointmentDate(firebase_user_id: String): List<Date> {
         val call = "{CALL getAppointmentDate(?)}"
         val statement = connection.prepareCall(call)
         statement.setString(1, firebase_user_id)
         val resultSet = statement.executeQuery()
-        return if (resultSet.next()) {
-            resultSet.getDate("date")
-        } else {
-            null
+        val dates = mutableListOf<Date>()
+        while (resultSet.next()) {
+            dates.add(resultSet.getDate("date"))
         }
+        return dates
     }
     fun addVaccinationRecord(firebase_user_id: String, vaccine_name: String, dose: Int, date: String): Boolean {
         val userIdQuery = """

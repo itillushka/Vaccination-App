@@ -10,16 +10,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vaccinationmanagerapp.MyFirebaseMessagingService
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.fragments.AppointmentDetailsDialogFragment
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.Appointment
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.status
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.Notifications
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.NotificationsDBQueries
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.sql.Timestamp
 
 data class AppointmentItem(
     val appointment_id: Int,
@@ -85,12 +90,33 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
                 connection.close()
 
                 if (result) {
+                    val firebaseAuth = FirebaseAuth.getInstance()
+                    val firebaseUser = firebaseAuth.currentUser
+                    var firebaseUserId : String = ""
+                    if (firebaseUser != null) {
+                        firebaseUserId = firebaseUser.uid
+                    }
+                    val connection = DBconnection.getConnection()
+                    // Insert the notification into the database
+                    val notificationDBQueries = NotificationsDBQueries(connection)
+                    val notification = Notifications(
+                        firebase_user_id = firebaseUserId,
+                        date_sent = Timestamp(System.currentTimeMillis()),
+                        title = "Appointment Reminder",
+                        description = "Your appointment is cancelled!"
+                    )
+                    notificationDBQueries.insertNotifications(notification)
+
                     withContext(Dispatchers.Main) {
                         holder.appointmentStatus.setImageResource(R.drawable.canceled_appm_icon)
                         currentItem.status = status.Canceled
                         holder.cancelBookingButton.setTextColor(R.color.gray)
                         holder.cancelBookingButton.setBackgroundResource(R.drawable.unavailable_button)
                         holder.cancelBookingButton.setText("Canceled")
+                        val notificationService = MyFirebaseMessagingService()
+                        notificationService.generateNotification(holder.itemView.context,"Appointment Reminder", "Your appointment is cancelled!")
+
+
                     }
                 } else {
                     // Handle the error

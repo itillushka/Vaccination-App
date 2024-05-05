@@ -5,14 +5,17 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.Notifications
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.NotificationsDBQueries
 import com.google.firebase.auth.FirebaseAuth
+import java.sql.Timestamp
 import java.util.concurrent.TimeUnit
 
 class AppointmentReminderWorker(appContext: Context, workerParams: WorkerParameters):
     Worker(appContext, workerParams) {
 
     override fun doWork(): Result {
-        // Retrieve the appointment date from the database
+        // Retrieve the appointment dates from the database
         val connection = DBconnection.getConnection()
         val dbQueries = AppointmentDBQueries(connection)
 
@@ -23,17 +26,37 @@ class AppointmentReminderWorker(appContext: Context, workerParams: WorkerParamet
         if (firebaseUser != null) {
             firebaseUserId = firebaseUser.uid
         }
-        val appointmentDate = dbQueries.getAppointmentDate(firebaseUserId)
+        val appointmentDates = dbQueries.getAppointmentDate(firebaseUserId)
 
-        // Check if the appointment date is 7 days from today
+        // Get the current date
         val currentDate = System.currentTimeMillis()
-        val diff = appointmentDate!!.time - currentDate
-        val diffInDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
 
-        if (diffInDays == 7L) {
-            // If it's 7 days from today, send a notification
-            val notificationService = MyFirebaseMessagingService()
-            notificationService.generateNotification(applicationContext,"Appointment Reminder", "Your appointment is in 7 days.")
+        // Iterate over the appointment dates
+        for (appointmentDate in appointmentDates) {
+            // Calculate the difference in days between the appointment date and the current date
+            val diff = appointmentDate.time - currentDate
+            val diffInDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+
+            // If the difference is less than 7 days, send a notification
+            if (diffInDays < 7L) {
+                val notificationService = MyFirebaseMessagingService()
+                notificationService.generateNotification(applicationContext,"Appointment Reminder", "Your appointment is in $diffInDays days.")
+
+                val firebaseAuth = FirebaseAuth.getInstance()
+                val firebaseUser = firebaseAuth.currentUser
+                var firebaseUserId : String = ""
+                if (firebaseUser != null) {
+                    firebaseUserId = firebaseUser.uid
+                }
+                val notificationDBQueries = NotificationsDBQueries(connection)
+                val notification = Notifications(
+                    firebase_user_id = firebaseUserId,
+                    date_sent = Timestamp(System.currentTimeMillis()),
+                    title = "Appointment Reminder",
+                    description = "Your appointment is in $diffInDays days."
+                )
+                notificationDBQueries.insertNotifications(notification)
+            }
         }
 
         // Indicate whether the task finished successfully with the Result

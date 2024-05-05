@@ -19,6 +19,8 @@ import com.example.vaccinationmanagerapp.decorators.SpaceItemDecoration
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.Appointment
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.Notifications
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.NotificationsDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.vaccine.VaccineDBQueries
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +28,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.sql.Date
+import java.sql.Timestamp
 import java.util.Calendar
 
 
@@ -135,6 +138,24 @@ class SetAppointmentActivity : AppCompatActivity() {
 
                 val result = dbQueries.createAppointment(selectedVaccineType!!, selectedDate, firebaseUserId)
 
+                if (result) {
+                    // If the appointment is successfully created, finish the activity
+                    val notificationService = MyFirebaseMessagingService()
+                    notificationService.generateNotification(applicationContext,"Appointment Reminder", "Your appointment is created!")
+
+                    // Insert the notification into the database
+                    val notificationDBQueries = NotificationsDBQueries(connection)
+                    val notification = Notifications(
+                        firebase_user_id = firebaseUserId,
+                        date_sent = Timestamp(System.currentTimeMillis()),
+                        title = "Appointment Reminder",
+                        description = "Your appointment is created!"
+                    )
+                    notificationDBQueries.insertNotifications(notification)
+                    finish()
+                } else {
+                    // Handle the error
+                }
 
                 // If the appointment is successfully created, update the vaccine dose
                /* if (result) {
