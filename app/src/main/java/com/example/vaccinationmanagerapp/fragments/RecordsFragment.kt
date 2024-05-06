@@ -91,7 +91,9 @@ class RecordsFragment : Fragment() {
                     vaccine_name = appointment.vaccine_name.toString(),
                     date = appointment.date.toString(),
                     dose = appointment.dose ?: 0,
-                    status = appointment.status ?: status.Completed
+                    status = appointment.status ?: status.Completed,
+                    number_of_doses = appointment.number_of_doses ?: 0,
+                    time_between_doses = appointment.time_between_doses ?: 0
                 )
             }
             withContext(Dispatchers.Main) {
@@ -132,7 +134,9 @@ class RecordsFragment : Fragment() {
                     vaccine_name = appointment.vaccine_name.toString(),
                     date = appointment.date.toString(),
                     dose = appointment.dose ?: 0,
-                    status = appointment.status ?: status.Completed
+                    status = appointment.status ?: status.Completed,
+                    number_of_doses = appointment.number_of_doses ?: 0,
+                    time_between_doses = appointment.time_between_doses ?: 0
                 )
             }
 

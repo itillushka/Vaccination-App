@@ -7,6 +7,7 @@ import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Timestamp
+import java.sql.Types
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -134,7 +135,9 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
                 status = status.valueOf(result.getString("status")),
                 dose = result.getInt("dose"),
                 date = result.getTimestamp("date"),
-                vaccine_name = result.getString("vaccine_name")
+                vaccine_name = result.getString("vaccine_name"),
+                number_of_doses = result.getInt("number_of_doses"),
+                time_between_doses = result.getInt("time_between_doses")
             )
             appointments.add(appointment)
         }
@@ -261,58 +264,59 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
 
         return insertAppointment(appointment)
     }
-    fun getDoseByUserAndVaccine(firebase_user_id: String, vaccine_name: String): Int? {
-        val userIdQuery = """
-        SELECT user_id FROM Users WHERE firebase_user_id = ?
-        """
-        val userIdStatement = connection.prepareStatement(userIdQuery)
-        userIdStatement.setString(1, firebase_user_id)
-        val userIdResult = userIdStatement.executeQuery()
-        val user_id = if (userIdResult.next()) userIdResult.getInt("user_id") else return 0
 
-        val vaccineIdQuery = """
-        SELECT vaccine_id FROM Vaccine WHERE vaccine_name = ?
-        """
-        val vaccineIdStatement = connection.prepareStatement(vaccineIdQuery)
-        vaccineIdStatement.setString(1, vaccine_name)
-        val vaccineIdResult = vaccineIdStatement.executeQuery()
-        val vaccine_id = if (vaccineIdResult.next()) vaccineIdResult.getInt("vaccine_id") else return 0
+    fun getUpcomingAppointment(firebaseUserId: String): Appointment {
+        val call = "{CALL getUpcomingAppointments(?, ?, ?, ?, ?, ?, ?, ?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebaseUserId)
+        statement.registerOutParameter(2, Types.INTEGER) // pappointment_id
+        statement.registerOutParameter(3, Types.INTEGER) // puser_id
+        statement.registerOutParameter(4, Types.INTEGER) // pvaccine_id
+        statement.registerOutParameter(5, Types.VARCHAR) // pstatus
+        statement.registerOutParameter(6, Types.INTEGER) // pdose
+        statement.registerOutParameter(7, Types.TIMESTAMP) // pdate
+        statement.registerOutParameter(8, Types.VARCHAR) // pvaccine_name
 
-        val sql = "SELECT dose FROM Appointment WHERE user_id = ? AND vaccine_id = ?"
-        val preparedStatement = connection.prepareStatement(sql)
-        preparedStatement.setInt(1, user_id)
-        preparedStatement.setInt(2, vaccine_id)
-        val resultSet = preparedStatement.executeQuery()
+        statement.execute()
 
-        return if (resultSet.next()) {
-            resultSet.getInt("dose")
-        } else {
-            null
-        }
+        val appointmentId = statement.getInt(2)
+        val userId = statement.getInt(3)
+        val vaccineId = statement.getInt(4)
+        val status = status.valueOf(statement.getString(5))
+        val dose = statement.getInt(6)
+        val date = statement.getTimestamp(7)
+        val vaccineName = statement.getString(8)
+
+        return Appointment(appointmentId, userId, vaccineId, status, dose, date, vaccineName)
+    }
+    fun getLastVaccinationRecord(firebaseUserId: String): Appointment {
+        val call = "{CALL getFirstVaccinationRecord(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebaseUserId)
+        statement.registerOutParameter(2, Types.INTEGER) // pappointment_id
+        statement.registerOutParameter(3, Types.INTEGER) // puser_id
+        statement.registerOutParameter(4, Types.INTEGER) // pvaccine_id
+        statement.registerOutParameter(5, Types.VARCHAR) // pstatus
+        statement.registerOutParameter(6, Types.INTEGER) // pdose
+        statement.registerOutParameter(7, Types.TIMESTAMP) // pdate
+        statement.registerOutParameter(8, Types.VARCHAR) // pvaccine_name
+        statement.registerOutParameter(9, Types.INTEGER) // pnumber_of_doses
+        statement.registerOutParameter(10, Types.INTEGER) // ptime_between_doses
+
+        statement.execute()
+
+        val appointmentId = statement.getInt(2)
+        val userId = statement.getInt(3)
+        val vaccineId = statement.getInt(4)
+        val status = status.valueOf(statement.getString(5))
+        val dose = statement.getInt(6)
+        val date = statement.getTimestamp(7)
+        val vaccineName = statement.getString(8)
+        val numberOfDoses = statement.getInt(9)
+        val timeBetweenDoses = statement.getInt(10)
+
+        return Appointment(appointmentId, userId, vaccineId, status, dose, date, vaccineName, numberOfDoses, timeBetweenDoses)
     }
 
-    fun updateDoseByUserAndVaccine(firebase_user_id: String, vaccine_name: String, newDose: Int) {
-        val userIdQuery = """
-        SELECT user_id FROM Users WHERE firebase_user_id = ?
-        """
-        val userIdStatement = connection.prepareStatement(userIdQuery)
-        userIdStatement.setString(1, firebase_user_id)
-        val userIdResult = userIdStatement.executeQuery()
-        val user_id = if (userIdResult.next()) userIdResult.getInt("user_id") else return
 
-        val vaccineIdQuery = """
-        SELECT vaccine_id FROM Vaccine WHERE vaccine_name = ?
-        """
-        val vaccineIdStatement = connection.prepareStatement(vaccineIdQuery)
-        vaccineIdStatement.setString(1, vaccine_name)
-        val vaccineIdResult = vaccineIdStatement.executeQuery()
-        val vaccine_id = if (vaccineIdResult.next()) vaccineIdResult.getInt("vaccine_id") else return
-
-        val sql = "UPDATE Appointment SET dose = ? WHERE user_id = ? AND vaccine_id = ?"
-        val preparedStatement = connection.prepareStatement(sql)
-        preparedStatement.setInt(1, newDose)
-        preparedStatement.setInt(2, user_id)
-        preparedStatement.setInt(3, vaccine_id)
-        preparedStatement.executeUpdate()
-    }
 }

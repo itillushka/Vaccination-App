@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
-import com.example.vaccinationmanagerapp.models.VaccinationRecord
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.status
@@ -16,13 +15,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 data class RecordItem(
     val appointment_id: Int,
     val vaccine_name: String,
     val date: String,
     val dose: Int,
-    var status: status
+    var status: status,
+    val number_of_doses: Int,
+    var time_between_doses: Int
 )
 
 class VaccinationHistoryListAdapter(private val records: List<RecordItem>) :
@@ -48,7 +52,7 @@ class VaccinationHistoryListAdapter(private val records: List<RecordItem>) :
         holder.vaccineName.text = currentItem.vaccine_name
         holder.doseText.text = "Dose: " + currentItem.dose.toString()
         holder.dateText.text = currentItem.date.substring(0, 10)
-        holder.nextDose.text = "Next Dose: TODO"
+        holder.nextDose.text = calculateNextDose(currentItem.date, currentItem.time_between_doses, currentItem.dose, currentItem.number_of_doses)
 
         holder.deleteRecord.setOnClickListener {
             val appointmentId = currentItem.appointment_id
@@ -71,6 +75,26 @@ class VaccinationHistoryListAdapter(private val records: List<RecordItem>) :
                     // Handle the error
                 }
             }
+        }
+    }
+    fun calculateNextDose(lastVaccinationDate: String, timeBetweenDoses: Int, dose: Int, numberOfDoses: Int): String {
+        if (dose >= numberOfDoses) {
+            return "No more doses needed"
+        }
+
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        val date = format.parse(lastVaccinationDate)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.DAY_OF_MONTH, timeBetweenDoses)
+
+        val currentDate = Calendar.getInstance()
+        val daysUntilNextDose = ((calendar.time.time - currentDate.time.time) / (1000 * 60 * 60 * 24)).toInt()
+
+        return if (daysUntilNextDose > 0) {
+            "Next Dose: in $daysUntilNextDose days"
+        } else {
+            "Next Dose: As soon as possible"
         }
     }
 
