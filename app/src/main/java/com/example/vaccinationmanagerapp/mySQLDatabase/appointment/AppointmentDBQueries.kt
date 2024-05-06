@@ -135,7 +135,9 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
                 status = status.valueOf(result.getString("status")),
                 dose = result.getInt("dose"),
                 date = result.getTimestamp("date"),
-                vaccine_name = result.getString("vaccine_name")
+                vaccine_name = result.getString("vaccine_name"),
+                number_of_doses = result.getInt("number_of_doses"),
+                time_between_doses = result.getInt("time_between_doses")
             )
             appointments.add(appointment)
         }
@@ -286,6 +288,34 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         val vaccineName = statement.getString(8)
 
         return Appointment(appointmentId, userId, vaccineId, status, dose, date, vaccineName)
+    }
+    fun getLastVaccinationRecord(firebaseUserId: String): Appointment {
+        val call = "{CALL getFirstVaccinationRecord(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"
+        val statement = connection.prepareCall(call)
+        statement.setString(1, firebaseUserId)
+        statement.registerOutParameter(2, Types.INTEGER) // pappointment_id
+        statement.registerOutParameter(3, Types.INTEGER) // puser_id
+        statement.registerOutParameter(4, Types.INTEGER) // pvaccine_id
+        statement.registerOutParameter(5, Types.VARCHAR) // pstatus
+        statement.registerOutParameter(6, Types.INTEGER) // pdose
+        statement.registerOutParameter(7, Types.TIMESTAMP) // pdate
+        statement.registerOutParameter(8, Types.VARCHAR) // pvaccine_name
+        statement.registerOutParameter(9, Types.INTEGER) // pnumber_of_doses
+        statement.registerOutParameter(10, Types.INTEGER) // ptime_between_doses
+
+        statement.execute()
+
+        val appointmentId = statement.getInt(2)
+        val userId = statement.getInt(3)
+        val vaccineId = statement.getInt(4)
+        val status = status.valueOf(statement.getString(5))
+        val dose = statement.getInt(6)
+        val date = statement.getTimestamp(7)
+        val vaccineName = statement.getString(8)
+        val numberOfDoses = statement.getInt(9)
+        val timeBetweenDoses = statement.getInt(10)
+
+        return Appointment(appointmentId, userId, vaccineId, status, dose, date, vaccineName, numberOfDoses, timeBetweenDoses)
     }
 
 

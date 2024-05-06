@@ -11,4 +11,6 @@ data class Appointment(
     val dose : Int? = null,
     val date : Timestamp? = null,
     val vaccine_name: String? = null,
+    val number_of_doses: Int? = null,
+    val time_between_doses: Int? = null
 )
