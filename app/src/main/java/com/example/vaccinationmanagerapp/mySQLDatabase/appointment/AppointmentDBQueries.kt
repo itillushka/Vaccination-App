@@ -316,4 +316,5 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
 
         return insertAppointment(appointment)
     }
+
 }

@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
-import com.example.vaccinationmanagerapp.adapters.AppointmentItem
 import com.example.vaccinationmanagerapp.adapters.NotificationItem
 import com.example.vaccinationmanagerapp.adapters.RecentNotificationsAdapter
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
@@ -19,37 +18,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [NotificationFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * This fragment is responsible for displaying the user's notifications.
+ * It fetches the notifications from the database and displays them in a RecyclerView.
  */
 class NotificationFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    /**
+     * This function is called when the fragment is created.
+     * It sets up the RecyclerViews for the recent notifications and all notifications.
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_notification, container, false)
     }
-
+    /**
+     * This function is called after the view is created.
+     * It fetches the notifications from the database and sets up the RecyclerViews.
+     * @param view The View returned by onCreateView(LayoutInflater, ViewGroup, Bundle).
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -75,7 +70,7 @@ class NotificationFragment : Fragment() {
                 NotificationItem(
                     notification.title ?: "",
                     notification.description ?: "",
-                    notification.date_sent?.toString()?.substring(0,19) ?: ""
+                    notification.date_sent?.toString()?.substring(0,10) ?: ""
                 )
             }
 
@@ -84,7 +79,7 @@ class NotificationFragment : Fragment() {
                 NotificationItem(
                     notification.title ?: "",
                     notification.description ?: "",
-                    notification.date_sent?.toString()?.substring(0,19) ?: ""
+                    notification.date_sent?.toString()?.substring(0,10) ?: ""
                 )
             }
 
@@ -101,25 +96,5 @@ class NotificationFragment : Fragment() {
 
             connection.close()
         }
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment NotificationFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            NotificationFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

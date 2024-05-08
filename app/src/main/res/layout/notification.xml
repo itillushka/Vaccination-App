@@ -18,7 +18,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/poppins_semibold"
             android:text="Title"
-            android:textSize="20sp" />
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/notification_description"
@@ -30,7 +30,7 @@
             android:layout_marginLeft="10dp"
             android:fontFamily="@font/poppins_regular"
             android:text="Description"
-            android:textSize="18sp" />
+            android:textSize="8sp" />
 
     </RelativeLayout>
 

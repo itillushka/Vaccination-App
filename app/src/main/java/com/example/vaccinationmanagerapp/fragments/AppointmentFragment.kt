@@ -1,5 +1,6 @@
 package com.example.vaccinationmanagerapp.fragments
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
@@ -19,47 +20,44 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.SetAppointmentActivity
-import com.example.vaccinationmanagerapp.adapters.AppointmentItem
 import com.example.vaccinationmanagerapp.adapters.AppointmentsListAdapter
+import com.example.vaccinationmanagerapp.entity.AppointmentItem
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.status
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
- * A simple [Fragment] subclass.
- * Use the [AppointmentFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A [Fragment] subclass that represents the user's appointments.
+ * It fetches the user's appointments from the database and displays them in a RecyclerView.
+ * It also provides an option to set a new appointment.
  */
 class AppointmentFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    /**
+     * Inflates the layout for this fragment and returns the inflated View.
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_appointment, container, false)
     }
+
+    /**
+     * Sets up the UI elements and their OnClickListeners after the view is created.
+     * It sets up the RecyclerView for the appointments and the set appointment button.
+     * It fetches the user's appointments from the database and displays them in the RecyclerView.
+     * @param view The View returned by onCreateView(LayoutInflater, ViewGroup, Bundle).
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -98,7 +96,6 @@ class AppointmentFragment : Fragment() {
                 )
             }
 
-
             withContext(Dispatchers.Main) {
                 if (appointmentItems.isEmpty()) {
                     recyclerView.visibility = View.GONE
@@ -117,6 +114,11 @@ class AppointmentFragment : Fragment() {
 
 
     }
+    /**
+     * Updates the appointments list in the fragment.
+     * If there are no appointments, it displays an empty box image.
+     * @param emptyBoxImageView The ImageView for the empty box image.
+     */
     private fun updateAppointmentsList(emptyBoxImageView: ImageView? = null) {
         val recyclerView: RecyclerView = view?.findViewById(R.id.recycleViewAppointments) ?: return
         val firebaseAuth = FirebaseAuth.getInstance()
@@ -155,22 +157,20 @@ class AppointmentFragment : Fragment() {
         }
     }
 
-
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AppointmentFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
+
+/**
+ * A dialog fragment that displays the details of an appointment.
+ * @property appointment_id The unique identifier of the appointment.
+ */
 class AppointmentDetailsDialogFragment(private val appointment_id: Int) : DialogFragment() {
 
+    /**
+     * Creates and returns the dialog to be shown.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return a new Dialog instance to be displayed by the Fragment.
+     */
+    @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)

@@ -54,7 +54,7 @@ class AppointmentReminderWorker(appContext: Context, workerParams: WorkerParamet
             // If the difference is less than 7 days, send a notification
             if (diffInDays < 7L) {
                 val notificationService = MyFirebaseMessagingService()
-                notificationService.generateNotification(applicationContext,"Appointment Reminder", "Your appointment is in $diffInDays days.")
+                notificationService.generateNotification(applicationContext,"Appointment Reminder", "According to your previous vaccination record your next dose should be in $diffInDays days.")
 
                 val firebaseAuth = FirebaseAuth.getInstance()
                 val firebaseUser = firebaseAuth.currentUser
@@ -67,7 +67,7 @@ class AppointmentReminderWorker(appContext: Context, workerParams: WorkerParamet
                     firebase_user_id = firebaseUserId,
                     date_sent = Timestamp(System.currentTimeMillis()),
                     title = "Appointment Reminder",
-                    description = "Your appointment is in $diffInDays days."
+                    description = "According to your previous vaccination record your next dose should be in $diffInDays days."
                 )
                 notificationDBQueries.insertNotifications(notification)
             }
