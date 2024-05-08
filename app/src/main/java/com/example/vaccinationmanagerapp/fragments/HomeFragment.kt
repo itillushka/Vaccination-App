@@ -11,7 +11,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
@@ -22,33 +21,29 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
-import androidx.navigation.fragment.findNavController
-import com.example.vaccinationmanagerapp.adapters.NotificationItem
 import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.NotificationsDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
 import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A [Fragment] subclass that represents the home screen of the application.
+ * It displays the user's upcoming appointment, last vaccination record, and last notification.
+ * It also provides navigation to the corresponding details screens.
  */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
+    /**
+     * Sets up the UI elements and their OnClickListeners after the view is created.
+     * It sets up the upcoming appointment, last record, and last notification sections.
+     * @param view The View returned by onCreateView(LayoutInflater, ViewGroup, Bundle).
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // functionality which we cannot implement properly
         val upcomingAppointmentButton: ImageButton = view.findViewById(R.id.upcAppmArrowButton)
         val lastRecordButton: ImageButton = view.findViewById(R.id.recordsArrowButton)
         val notificationButton: ImageButton = view.findViewById(R.id.notificationArrowButton)
-
+        /*
         upcomingAppointmentButton.setOnClickListener {
             findNavController().navigate(R.id.appointmentFragment)
         }
@@ -60,21 +55,21 @@ class HomeFragment : Fragment() {
         notificationButton.setOnClickListener {
             findNavController().navigate(R.id.notificationFragment)
         }
+         */
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
     private lateinit var upcomingAppointment: View
     private lateinit var lastRecord: View
     private lateinit var lastNotification: View
 
-    @SuppressLint("ResourceAsColor")
+    /**
+     * Inflates the layout for this fragment and returns the inflated View.
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
+    @SuppressLint("ResourceAsColor", "SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -260,7 +255,16 @@ class HomeFragment : Fragment() {
 
         return view
     }
-    fun calculateNextDose(lastVaccinationDate: String, timeBetweenDoses: Int, dose: Int, numberOfDoses: Int): String {
+
+    /**
+     * Calculates the date of the next dose based on the last vaccination date, the time between doses, the dose number, and the total number of doses.
+     * @param lastVaccinationDate The date of the last vaccination.
+     * @param timeBetweenDoses The time between doses in days.
+     * @param dose The dose number.
+     * @param numberOfDoses The total number of doses.
+     * @return The date of the next dose.
+     */
+    private fun calculateNextDose(lastVaccinationDate: String, timeBetweenDoses: Int, dose: Int, numberOfDoses: Int): String {
         if (dose >= numberOfDoses) {
             return "No more doses needed"
         }
@@ -268,7 +272,7 @@ class HomeFragment : Fragment() {
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         val date = format.parse(lastVaccinationDate)
         val calendar = Calendar.getInstance()
-        calendar.time = date
+        calendar.time = date!!
         calendar.add(Calendar.DAY_OF_MONTH, timeBetweenDoses)
 
         val currentDate = Calendar.getInstance()
@@ -279,25 +283,5 @@ class HomeFragment : Fragment() {
         } else {
             "Next Dose: As soon as possible"
         }
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

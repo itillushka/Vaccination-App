@@ -1,7 +1,6 @@
 package com.example.vaccinationmanagerapp.adapters
 
 import android.annotation.SuppressLint
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.MyFirebaseMessagingService
 import com.example.vaccinationmanagerapp.R
+import com.example.vaccinationmanagerapp.entity.AppointmentItem
 import com.example.vaccinationmanagerapp.fragments.AppointmentDetailsDialogFragment
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
-import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.Appointment
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.status
 import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.Notifications
@@ -26,17 +25,25 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.sql.Timestamp
 
-data class AppointmentItem(
-    val appointment_id: Int,
-    val vaccine_name: String,
-    val date: String,
-    val dose: Int,
-    var status: status
-)
+/**
+ * A RecyclerView.Adapter that is used to display a list of appointments in a RecyclerView.
+ *
+ * @property appointmentList The list of appointments to display in the RecyclerView. Each appointment is represented as an instance of [AppointmentItem].
+ *
+ * @constructor Creates an instance of AppointmentsListAdapter with the provided list of appointments.
+ */
 
 class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>) :
     RecyclerView.Adapter<AppointmentsListAdapter.AppointmentViewHolder>() {
-
+    /**
+     * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
+     *
+     * @property appmName The TextView that displays the name of the vaccine for the appointment.
+     * @property appointmentStatus The ImageView that displays the status of the appointment.
+     * @property dateAppText The TextView that displays the date of the appointment.
+     * @property doseAppText The TextView that displays the dose number of the appointment.
+     * @property cancelBookingButton The Button that allows the user to cancel the appointment.
+     */
     inner class AppointmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val appmName: TextView = itemView.findViewById(R.id.appointmentName)
         val appointmentStatus: ImageView = itemView.findViewById(R.id.appointmentStatus)
@@ -53,7 +60,13 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
             }
         }
     }
-
+    /**
+     * Called when RecyclerView needs a new [AppointmentViewHolder] of the given type to represent an item.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new [AppointmentViewHolder] that holds a View of the given view type.
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.appointment_list_item,
@@ -61,8 +74,13 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
         )
         return AppointmentViewHolder(itemView)
     }
-
-    @SuppressLint("ResourceAsColor")
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     *
+     * @param holder The [AppointmentViewHolder] that should be updated to represent the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
+    @SuppressLint("ResourceAsColor", "SetTextI18n")
     override fun onBindViewHolder(holder: AppointmentViewHolder, position: Int) {
         val currentItem = appointmentList[position]
         holder.appmName.text = currentItem.vaccine_name
@@ -74,7 +92,7 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
             holder.appointmentStatus.setImageResource(R.drawable.canceled_appm_icon)
             holder.cancelBookingButton.setTextColor(R.color.gray)
             holder.cancelBookingButton.setBackgroundResource(R.drawable.unavailable_button)
-            holder.cancelBookingButton.setText("Canceled")
+            holder.cancelBookingButton.text = "Canceled"
         } else {
             holder.appointmentStatus.setImageResource(R.drawable.upcoming_appm_icon)
         }
@@ -112,20 +130,22 @@ class AppointmentsListAdapter(private val appointmentList: List<AppointmentItem>
                         currentItem.status = status.Canceled
                         holder.cancelBookingButton.setTextColor(R.color.gray)
                         holder.cancelBookingButton.setBackgroundResource(R.drawable.unavailable_button)
-                        holder.cancelBookingButton.setText("Canceled")
+                        holder.cancelBookingButton.text = "Canceled"
                         val notificationService = MyFirebaseMessagingService()
                         notificationService.generateNotification(holder.itemView.context,"Appointment Reminder", "Your appointment is cancelled!")
-
-
                     }
                 } else {
-                    // Handle the error
+                    // Show an error message
                 }
             }
 
 
         }
     }
-
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
     override fun getItemCount() = appointmentList.size
 }

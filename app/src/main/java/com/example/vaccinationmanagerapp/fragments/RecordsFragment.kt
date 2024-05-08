@@ -14,12 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vaccinationmanagerapp.AddRecordActivity
 import com.example.vaccinationmanagerapp.R
-import com.example.vaccinationmanagerapp.SetAppointmentActivity
-import com.example.vaccinationmanagerapp.adapters.AppointmentItem
-import com.example.vaccinationmanagerapp.adapters.AppointmentsListAdapter
-import com.example.vaccinationmanagerapp.adapters.RecordItem
+import com.example.vaccinationmanagerapp.entity.RecordItem
 import com.example.vaccinationmanagerapp.adapters.VaccinationHistoryListAdapter
-import com.example.vaccinationmanagerapp.models.VaccinationRecord
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.status
@@ -28,37 +24,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
- * A simple [Fragment] subclass.
- * Use the [RecordsFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A [Fragment] subclass that represents the user's vaccination records.
+ * It fetches the user's vaccination records from the database and displays them in a RecyclerView.
+ * It also provides an option to add a new vaccination record.
  */
 class RecordsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-    private lateinit var vaccinationRecordsRecyclerView: RecyclerView
-
+    /**
+     * Inflates the layout for this fragment and returns the inflated View.
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_records, container, false)
     }
+
+    /**
+     * Sets up the UI elements and their OnClickListeners after the view is created.
+     * It sets up the RecyclerView for the vaccination records and the add record button.
+     * It fetches the user's vaccination records from the database and displays them in the RecyclerView.
+     * @param view The View returned by onCreateView(LayoutInflater, ViewGroup, Bundle).
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -113,6 +106,11 @@ class RecordsFragment : Fragment() {
         }
 
     }
+    /**
+     * Fetches the user's vaccination records from the database and updates the RecyclerView.
+     * If there are no records, it displays an empty box image.
+     * @param emptyBoxImageView The ImageView for the empty box image.
+     */
     private fun updateAppointmentsList(emptyBoxImageView: ImageView? = null) {
         val recyclerView: RecyclerView = view?.findViewById(R.id.vaccinationRecordsRecyclerView) ?: return
         val firebaseAuth = FirebaseAuth.getInstance()
@@ -151,25 +149,5 @@ class RecordsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RecordsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RecordsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
