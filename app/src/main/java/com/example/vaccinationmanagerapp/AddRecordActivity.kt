@@ -24,6 +24,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 
+/**
+ * Activity for adding a vaccination record.
+ *
+ * This activity allows the user to add a vaccination record by selecting a vaccine type,
+ * a dose, and a date.
+ */
 class AddRecordActivity : AppCompatActivity() {
     private var vaccineTypes = mutableListOf<String>()
     override fun onCreate(savedInstanceState: Bundle?) {

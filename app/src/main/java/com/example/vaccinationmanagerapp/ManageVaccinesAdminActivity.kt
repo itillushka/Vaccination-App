@@ -1,5 +1,6 @@
 package com.example.vaccinationmanagerapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -15,9 +16,17 @@ import com.example.vaccinationmanagerapp.mySQLDatabase.vaccine.Vaccine
 import com.example.vaccinationmanagerapp.mySQLDatabase.vaccine.VaccineDBQueries
 import kotlinx.coroutines.*
 
+/**
+ * This activity allows the admin to manage the vaccines.
+ * It provides a form for the admin to add a new vaccine or delete an existing one.
+ * The form asks for the vaccine's name, number of doses, and time between doses.
+ * When the admin clicks the apply button, the entered details are used to add a new vaccine or delete an existing one.
+ * The changes are then saved in the database.
+ */
 class ManageVaccinesAdminActivity : AppCompatActivity() {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -62,6 +71,10 @@ class ManageVaccinesAdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Deletes a vaccine by its name.
+     * @param vaccineName The name of the vaccine to delete.
+     */
     private suspend fun deleteVaccineByName(vaccineName: String) {
         withContext(Dispatchers.IO) {
             val connection = DBconnection.getConnection()
@@ -79,6 +92,10 @@ class ManageVaccinesAdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inserts a new vaccine into the database.
+     * @param vaccine The vaccine to insert.
+     */
     private suspend fun insertVaccine(vaccine: Vaccine) {
         withContext(Dispatchers.IO) {
             val connection = DBconnection.getConnection()

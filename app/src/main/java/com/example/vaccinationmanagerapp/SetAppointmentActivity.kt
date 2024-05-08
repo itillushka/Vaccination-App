@@ -31,7 +31,13 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.util.Calendar
 
-
+/**
+ * This activity allows the user to set an appointment for vaccination.
+ * It provides a calendar for the user to select a date and a list of time slots to choose from.
+ * It also provides a list of available vaccines for the user to select.
+ * Once the user has selected a date, time slot, and vaccine, they can confirm the appointment.
+ * The appointment details are then saved in the database.
+ */
 class SetAppointmentActivity : AppCompatActivity() {
 
     private var vaccineTypes = mutableListOf<String>()
@@ -157,12 +163,6 @@ class SetAppointmentActivity : AppCompatActivity() {
                     // Handle the error
                 }
 
-                // If the appointment is successfully created, update the vaccine dose
-               /* if (result) {
-                    setAppointmentDose(firebaseUserId, selectedVaccineType)
-                }
-
-                */
                 connection.close()
 
                 if (result) {
@@ -174,21 +174,5 @@ class SetAppointmentActivity : AppCompatActivity() {
             }}
         }
     }
-   /* private fun setAppointmentDose(firebaseUserId: String, vaccineName: String) {
-    lifecycleScope.launch(Dispatchers.IO) {
-        val connection = DBconnection.getConnection()
-        val dbQueries = AppointmentDBQueries(connection)
-
-        val currentDose = dbQueries.getDoseByUserAndVaccine(firebaseUserId, vaccineName)
-
-        val newDose = currentDose?.plus(1) ?: 1
-
-        dbQueries.updateDoseByUserAndVaccine(firebaseUserId, vaccineName, newDose)
-
-        connection.close()
-    }
-}
-
-    */
 
 }

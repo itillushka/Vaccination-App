@@ -14,17 +14,22 @@ import com.google.firebase.messaging.RemoteMessage
 
 const val channelId = "notification_channel"
 const val channelName = "com.example.vaccinationmanagerapp"
+
+/**
+ * This service handles Firebase Cloud Messaging (FCM) messages.
+ * It can generate a notification when a message is received.
+ * The notification displays the title and body of the message.
+ * When the notification is clicked, it opens the MainActivity.
+ */
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
-    /*override fun onMessageReceived(remoteMessage: RemoteMessage) {
-
-        if(remoteMessage.getNotification() != null){
-            generateNotification(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
-        }
-
-    }*/
-
+    /**
+     * Returns a RemoteViews object that can be used to build a custom notification layout.
+     * @param title The title of the notification.
+     * @param message The message of the notification.
+     * @return A RemoteViews object containing the notification layout.
+     */
     fun getRemoteView(title: String, message: String) : RemoteViews {
         val remoteView = RemoteViews("com.example.vaccinationmanagerapp", R.layout.notification)
 
@@ -35,6 +40,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     }
 
+    /**
+     * Generates a notification with the given title and message.
+     * @param context The context in which the notification is generated.
+     * @param title The title of the notification.
+     * @param message The message of the notification.
+     */
     fun generateNotification(context: Context, title: String, message: String){
 
     val intent = Intent(context, MainActivity::class.java)
