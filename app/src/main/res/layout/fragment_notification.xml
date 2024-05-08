@@ -22,18 +22,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
-        <ImageView
-            android:id="@+id/imageView13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/update_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/appmDetailsStatus"
-            app:layout_constraintEnd_toEndOf="@+id/appmDetailsStatus"
-            app:layout_constraintHorizontal_bias="0.885"
-            app:layout_constraintStart_toStartOf="@+id/appmDetailsStatus"
-            app:layout_constraintTop_toTopOf="@+id/appmDetailsStatus"
-            app:layout_constraintVertical_bias="0.36" />
-
         <TextView
             android:id="@+id/textViewStatic24"
             android:layout_width="wrap_content"

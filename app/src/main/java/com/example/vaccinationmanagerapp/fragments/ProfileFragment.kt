@@ -1,7 +1,7 @@
 package com.example.vaccinationmanagerapp.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vaccinationmanagerapp.LoginActivity
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
-import com.example.vaccinationmanagerapp.mySQLDatabase.users.Users
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.gender
 import com.google.firebase.auth.FirebaseAuth
@@ -27,11 +26,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import android.app.NotificationManager
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
-class ProfileFragment : Fragment() {
 
+/**
+ * A [Fragment] subclass that represents the user's profile.
+ * It fetches the user data from the database and sets up the UI.
+ * It also provides options to change password, add more information, and log out.
+ */
+class ProfileFragment : Fragment() {
+    /**
+     * Fetches the user data from the database and sets up the UI.
+     * It gets the user's Firebase user id, fetches the corresponding user data from the database,
+     * and updates the UI with the fetched data.
+     */
+    @SuppressLint("SetTextI18n")
     suspend fun fetchUserData() {
         withContext(Dispatchers.IO) {
             // Getting connection using DBConnection class
@@ -55,20 +64,30 @@ class ProfileFragment : Fragment() {
                 val textViewPhoneProfile = view?.findViewById<TextView>(R.id.textViewPhoneProfile)
                 val textViewAgeProfile = view?.findViewById<TextView>(R.id.textViewAgeProfile)
                 val textViewGenderProfile = view?.findViewById<TextView>(R.id.textViewGenderProfile)
+                val textViewUsername = view?.findViewById<TextView>(R.id.textViewUserName)
 
-                if (userData.isNotEmpty()) {
-                    textViewPhoneProfile?.text = userData[0]
-                    textViewAgeProfile?.text = userData[1]
-                    textViewGenderProfile?.text = userData[2]
-                }
-            }
+                if (userData[2] != "0") {
+                    textViewUsername?.text = userData[0]
+                    textViewPhoneProfile?.text = userData[1]
+                    textViewAgeProfile?.text = userData[2]
+                    textViewGenderProfile?.text = userData[3]
+                }else{
+                    textViewUsername?.text = userData[0]
+                    textViewPhoneProfile?.text = "No Data"
+                    textViewAgeProfile?.text = "No Data"
+                    textViewGenderProfile?.text = "No Data"
+            }}
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
+    /**
+     * Inflates the layout for this fragment and returns the inflated View.
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,6 +96,13 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
+    /**
+     * Sets up the UI elements and their OnClickListeners after the view is created.
+     * It sets up the notification switch, support, change password, add info, and logout options.
+     * @param view The View returned by onCreateView(LayoutInflater, ViewGroup, Bundle).
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     */
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -143,15 +169,11 @@ class ProfileFragment : Fragment() {
 
 
     }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
-            }
-    }
 }
-
+/**
+ * A [DialogFragment] subclass that represents the support dialog.
+ * It provides a UI for the user to get support.
+ */
 class SupportDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,7 +206,10 @@ class SupportDialogFragment : DialogFragment() {
         fun newInstance() = SupportDialogFragment()
     }
 }
-
+/**
+ * A [DialogFragment] subclass that represents the change password dialog.
+ * It provides a UI for the user to change their password.
+ */
 class ChangePasswordDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -218,6 +243,10 @@ class ChangePasswordDialogFragment : DialogFragment() {
     }
 }
 
+/**
+ * A [DialogFragment] subclass that represents the add more info dialog.
+ * It provides a UI for the user to add more information to their profile.
+ */
 class AddMoreInfoDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
