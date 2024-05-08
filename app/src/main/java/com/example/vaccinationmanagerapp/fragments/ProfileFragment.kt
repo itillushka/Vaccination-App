@@ -55,13 +55,19 @@ class ProfileFragment : Fragment() {
                 val textViewPhoneProfile = view?.findViewById<TextView>(R.id.textViewPhoneProfile)
                 val textViewAgeProfile = view?.findViewById<TextView>(R.id.textViewAgeProfile)
                 val textViewGenderProfile = view?.findViewById<TextView>(R.id.textViewGenderProfile)
+                val textViewUsername = view?.findViewById<TextView>(R.id.textViewUserName)
 
-                if (userData.isNotEmpty()) {
-                    textViewPhoneProfile?.text = userData[0]
-                    textViewAgeProfile?.text = userData[1]
-                    textViewGenderProfile?.text = userData[2]
-                }
-            }
+                if (userData[2] != "0") {
+                    textViewUsername?.text = userData[0]
+                    textViewPhoneProfile?.text = userData[1]
+                    textViewAgeProfile?.text = userData[2]
+                    textViewGenderProfile?.text = userData[3]
+                }else{
+                    textViewUsername?.text = userData[0]
+                    textViewPhoneProfile?.text = "No Data"
+                    textViewAgeProfile?.text = "No Data"
+                    textViewGenderProfile?.text = "No Data"
+            }}
         }
     }
 

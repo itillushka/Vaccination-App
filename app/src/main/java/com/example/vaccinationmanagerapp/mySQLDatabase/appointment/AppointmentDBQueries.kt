@@ -278,7 +278,7 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         statement.registerOutParameter(8, Types.VARCHAR) // pvaccine_name
 
         statement.execute()
-
+        if(statement.getString(2) != null){
         val appointmentId = statement.getInt(2)
         val userId = statement.getInt(3)
         val vaccineId = statement.getInt(4)
@@ -288,6 +288,10 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         val vaccineName = statement.getString(8)
 
         return Appointment(appointmentId, userId, vaccineId, status, dose, date, vaccineName)
+        }
+        else{
+            return Appointment(0, 0, 0, status.Scheduled, 0, Timestamp(0), "")
+        }
     }
     fun getLastVaccinationRecord(firebaseUserId: String): Appointment {
         val call = "{CALL getFirstVaccinationRecord(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"
@@ -304,7 +308,7 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         statement.registerOutParameter(10, Types.INTEGER) // ptime_between_doses
 
         statement.execute()
-
+        if(statement.getString(2) != null){
         val appointmentId = statement.getInt(2)
         val userId = statement.getInt(3)
         val vaccineId = statement.getInt(4)
@@ -316,6 +320,10 @@ class AppointmentDBQueries(private val connection: Connection) : AppointmentDAO 
         val timeBetweenDoses = statement.getInt(10)
 
         return Appointment(appointmentId, userId, vaccineId, status, dose, date, vaccineName, numberOfDoses, timeBetweenDoses)
+        }
+        else{
+            return Appointment(0, 0, 0, status.Scheduled, 0, Timestamp(0), "", 0, 0)
+        }
     }
 
 

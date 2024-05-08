@@ -75,7 +75,7 @@ class NotificationFragment : Fragment() {
                 NotificationItem(
                     notification.title ?: "",
                     notification.description ?: "",
-                    notification.date_sent?.toString()?.substring(0,19) ?: ""
+                    notification.date_sent?.toString()?.substring(0,10) ?: ""
                 )
             }
 
@@ -84,7 +84,7 @@ class NotificationFragment : Fragment() {
                 NotificationItem(
                     notification.title ?: "",
                     notification.description ?: "",
-                    notification.date_sent?.toString()?.substring(0,19) ?: ""
+                    notification.date_sent?.toString()?.substring(0,10) ?: ""
                 )
             }
 

@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.vaccinationmanagerapp.R
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.appointment.AppointmentDBQueries
@@ -22,6 +23,9 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.navigation.fragment.findNavController
+import com.example.vaccinationmanagerapp.adapters.NotificationItem
+import com.example.vaccinationmanagerapp.mySQLDatabase.notifications.NotificationsDBQueries
+import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
 import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
@@ -68,6 +72,7 @@ class HomeFragment : Fragment() {
     }
     private lateinit var upcomingAppointment: View
     private lateinit var lastRecord: View
+    private lateinit var lastNotification: View
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(
@@ -77,9 +82,12 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         upcomingAppointment = view.findViewById(R.id.upcomingAppointment)
         lastRecord = view.findViewById(R.id.lastRecord)
+        lastNotification = view.findViewById(R.id.lastNotification)
+        val welcomeText: TextView = view.findViewById(R.id.welcomeText)
+
 
         CoroutineScope(Dispatchers.IO).launch {
-            val connection = DBconnection.getConnection()
+            var connection = DBconnection.getConnection()
             val dbQueries = AppointmentDBQueries(connection)
             val firebaseAuth = FirebaseAuth.getInstance()
             val firebaseUser = firebaseAuth.currentUser
@@ -90,9 +98,46 @@ class HomeFragment : Fragment() {
 
             val appointment = dbQueries.getUpcomingAppointment(firebaseUserId)
             val record = dbQueries.getLastVaccinationRecord(firebaseUserId)
+            val usersDBQueries = UsersDBQueries(connection)
+            val user = usersDBQueries.fetchUserData(firebaseUserId)
+            withContext(Dispatchers.Main) {
+                welcomeText.text = "Welcome, ${user[0]}!"
+            }
             connection.close()
 
-            if (appointment != null) {
+            // Get the notifications from the database
+            connection = DBconnection.getConnection()
+            val notificationDBQueries = NotificationsDBQueries(connection)
+            val notifications = notificationDBQueries.getNotifications(firebaseUserId)
+            connection.close()
+
+            if(notifications.isEmpty()) {
+                withContext(Dispatchers.Main) {
+                    val notificationTitle: TextView = lastNotification.findViewById(R.id.textViewNotificationTitle)
+                    val notificationBody: TextView = lastNotification.findViewById(R.id.textViewNotificationBody)
+                    val notificationDate: TextView = lastNotification.findViewById(R.id.textViewNotificationsDate)
+
+                    notificationTitle.text = "No notifications"
+                    notificationBody.text = "You have no new notifications"
+                    notificationDate.text = ""
+                }
+            } else {
+                // Sort the notifications by notification_id in descending order and take the first
+                val sortedNotification = notifications.sortedByDescending { it.notification_id }.take(1)
+
+                withContext(Dispatchers.Main) {
+                    val notificationTitle: TextView = lastNotification.findViewById(R.id.textViewNotificationTitle)
+                    val notificationBody: TextView = lastNotification.findViewById(R.id.textViewNotificationBody)
+                    val notificationDate: TextView = lastNotification.findViewById(R.id.textViewNotificationsDate)
+
+                    notificationTitle.text = sortedNotification[0].title
+                    notificationBody.text = sortedNotification[0].description
+                    notificationDate.text = sortedNotification[0].date_sent?.toString()?.substring(0,10)
+                }
+            }
+
+
+            if (appointment.appointment_id != 0) {
                 withContext(Dispatchers.Main) {
                     // Fill the TextViews
                     val appmName: TextView = upcomingAppointment.findViewById(R.id.appointmentName)
@@ -128,9 +173,32 @@ class HomeFragment : Fragment() {
                         dialogFragment.show(fragmentManager, "AppointmentDetailsDialogFragment")
                     }
                 }
+            } else {
+                withContext(Dispatchers.Main) {
+                    val appmName: TextView = upcomingAppointment.findViewById(R.id.appointmentName)
+                    val dateAppText: TextView = upcomingAppointment.findViewById(R.id.dateAppText)
+                    val doseAppText: TextView = upcomingAppointment.findViewById(R.id.doseAppText)
+                    val appointmentStatus: ImageView = upcomingAppointment.findViewById(R.id.appointmentStatus)
+                    val cancelBookingButton: Button = upcomingAppointment.findViewById(R.id.cancelBookingButton)
+                    val seeDetailsButton: Button = upcomingAppointment.findViewById(R.id.seeDetailsButton)
+
+                    appmName.text = "No information available"
+                    dateAppText.text = "Date: No Data"
+                    doseAppText.text = "Dose: No Data"
+
+                    cancelBookingButton.setTextColor(R.color.gray)
+                    cancelBookingButton.setBackgroundResource(R.drawable.unavailable_button)
+                    cancelBookingButton.isClickable = false
+
+                    seeDetailsButton.setTextColor(R.color.gray)
+                    seeDetailsButton.setBackgroundResource(R.drawable.unavailable_button)
+                    seeDetailsButton.isClickable = false
+
+                    appointmentStatus.setImageResource(R.drawable.unavailable_status_icon)
+                }
             }
 
-            if(record != null) {
+            if(record.appointment_id != 0) {
                 withContext(Dispatchers.Main) {
                     val vaccineName: TextView = lastRecord.findViewById(R.id.vacccineName)
                     val doseText: TextView = lastRecord.findViewById(R.id.doseText)
@@ -168,6 +236,24 @@ class HomeFragment : Fragment() {
                             }
                         }
                     }
+                }
+            }
+            else{
+                withContext(Dispatchers.Main) {
+                    val vaccineName: TextView = lastRecord.findViewById(R.id.vacccineName)
+                    val doseText: TextView = lastRecord.findViewById(R.id.doseText)
+                    val dateText: TextView = lastRecord.findViewById(R.id.dateText)
+                    val nextDose: TextView = lastRecord.findViewById(R.id.nextDose)
+                    val deleteRecord: Button = lastRecord.findViewById(R.id.deleteRecordButton)
+
+                    vaccineName.text = "No information available"
+                    doseText.text = "Dose: No Data"
+                    dateText.text = "Date: No Data"
+                    nextDose.text = "Next Dose: No Data"
+
+                    deleteRecord.setTextColor(R.color.gray)
+                    deleteRecord.setBackgroundResource(R.drawable.unavailable_button)
+                    deleteRecord.isClickable = false
                 }
             }
         }
