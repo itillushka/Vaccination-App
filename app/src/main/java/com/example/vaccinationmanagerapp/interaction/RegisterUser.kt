@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import com.example.vaccinationmanagerapp.LoginActivity
-import com.example.vaccinationmanagerapp.MainActivity
 import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.Users
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
@@ -17,9 +16,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
+/**
+ * Class for handling user registration.
+ *
+ * @property context The context in which this class is being used.
+ */
 class RegisterUser(private val context: Context) {
     private lateinit var auth: FirebaseAuth
 
+    /**
+     * Inserts the Firebase user ID and name into the database.
+     *
+     * @param firebaseUserId The Firebase user ID of the user.
+     * @param name The name of the user.
+     */
     suspend fun insertIDAndName(firebaseUserId : String?, name : String){
         withContext(Dispatchers.IO) {
             // Getting connection using DBConnection class
@@ -36,6 +46,13 @@ class RegisterUser(private val context: Context) {
         }
     }
 
+    /**
+     * Registers a new user with the specified name, email, and password.
+     *
+     * @param name The name of the user.
+     * @param email The email of the user.
+     * @param password The password of the user.
+     */
     fun registerUser(name: String, email: String, password: String) {
         auth = Firebase.auth
         auth.createUserWithEmailAndPassword(email, password)

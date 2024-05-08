@@ -11,6 +11,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.vaccinationmanagerapp.interaction.LoginUser
 
+/**
+ * Login activity of the application.
+ *
+ * This activity allows the user to log in using their email and password or their Google account.
+ */
 class LoginActivity : AppCompatActivity() {
     private lateinit var loginUser: LoginUser
 
@@ -48,6 +53,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Called when an activity you launched exits.
+     *
+     * This method handles the result of the sign in process.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     * allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         loginUser.handleSignInResult(requestCode, resultCode, data)

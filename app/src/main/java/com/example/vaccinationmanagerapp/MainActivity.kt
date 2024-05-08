@@ -15,6 +15,12 @@ import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.concurrent.TimeUnit
 
+/**
+ * Main activity of the application.
+ *
+ * This activity is the entry point of the application. It sets up the navigation controller
+ * and the bottom navigation view. It also schedules a periodic work request for appointment reminders.
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
@@ -28,20 +34,13 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        // Create a PeriodicWorkRequest
-        //val workRequest = PeriodicWorkRequestBuilder<AppointmentReminderWorker>(15, TimeUnit.MINUTES)
-         //   .build()
-
-        // Enqueue the work request
-        //WorkManager.getInstance(this).enqueue(workRequest)
-
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContainer) as NavHostFragment
 
         navController = navHostFragment.navController
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         setupWithNavController(bottomNavView, navController)
 
-        //val workRequest = PeriodicWorkRequestBuilder<AppointmentReminderWorker>(1, TimeUnit.DAYS).build()
-        //WorkManager.getInstance(this).enqueue(workRequest)
+        val workRequest = PeriodicWorkRequestBuilder<AppointmentReminderWorker>(1, TimeUnit.DAYS).build()
+        WorkManager.getInstance(this).enqueue(workRequest)
     }
 }
