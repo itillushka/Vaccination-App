@@ -21,10 +21,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+/**
+ * Class for handling user login.
+ *
+ * @property activity The activity in which this class is being used.
+ */
 class LoginUser(private val activity: Activity) {
     private val auth: FirebaseAuth = Firebase.auth
     private lateinit var googleSignInClient: GoogleSignInClient
 
+    /**
+     * Logs in a user with the specified email and password.
+     *
+     * @param email The email of the user.
+     * @param password The password of the user.
+     */
     fun loginUser(email: String, password: String) {
     auth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { task ->
@@ -61,6 +72,9 @@ class LoginUser(private val activity: Activity) {
         }
 }
 
+    /**
+     * Initiates the Google Sign In process.
+     */
     fun googleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(activity.getString(R.string.default_web_client_id))
@@ -73,6 +87,13 @@ class LoginUser(private val activity: Activity) {
         activity.startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
+    /**
+     * Handles the result of the Google Sign In process.
+     *
+     * @param requestCode The request code of the sign in process.
+     * @param resultCode The result code of the sign in process.
+     * @param data The intent data from the sign in process.
+     */
     fun handleSignInResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -85,6 +106,11 @@ class LoginUser(private val activity: Activity) {
         }
     }
 
+    /**
+     * Authenticates a user with Google.
+     *
+     * @param acct The GoogleSignInAccount of the user.
+     */
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
         val credential = GoogleAuthProvider.getCredential(acct?.idToken, null)
         auth.signInWithCredential(credential)

@@ -17,7 +17,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * This activity allows the admin to manage appointments.
+ * It provides a form for the admin to search for an appointment by its id.
+ * The form asks for the appointment's id.
+ * When the admin clicks the search button, the entered id is used to search for the appointment.
+ * The appointment details are then displayed in the form.
+ */
 class ManageAppointmentsAdminActivity : AppCompatActivity() {
+
+    /**
+     * Fetches an appointment by its id.
+     * @param id The id of the appointment to fetch.
+     */
     suspend fun fetchAppointmentById(id: Int){
         withContext(Dispatchers.IO) {
             // Getting connection using DBConnection class

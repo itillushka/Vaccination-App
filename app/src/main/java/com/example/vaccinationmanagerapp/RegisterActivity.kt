@@ -11,6 +11,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.vaccinationmanagerapp.interaction.RegisterUser
 
+/**
+ * This activity provides a registration form for new users.
+ * It asks for the user's name, email, and password.
+ * When the user clicks the register button, the entered details are used to create a new user account.
+ * If the user already has an account, they can navigate to the login activity by clicking on the text view at the bottom.
+ */
 class RegisterActivity : AppCompatActivity() {
     private lateinit var registerUser: RegisterUser
 

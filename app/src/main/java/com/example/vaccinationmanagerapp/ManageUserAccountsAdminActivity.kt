@@ -10,6 +10,13 @@ import com.example.vaccinationmanagerapp.mySQLDatabase.DBconnection
 import com.example.vaccinationmanagerapp.mySQLDatabase.users.UsersDBQueries
 import kotlinx.coroutines.*
 
+/**
+ * This activity allows the admin to manage user accounts.
+ * It provides a form for the admin to change a user's role or delete a user account.
+ * The form asks for the user's email and role.
+ * When the admin clicks the apply button, the entered details are used to change the user's role or delete the user account.
+ * The changes are then saved in the database.
+ */
 class ManageUserAccountsAdminActivity : AppCompatActivity() {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
@@ -64,6 +71,11 @@ class ManageUserAccountsAdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Changes the role of a user by their id.
+     * @param userId The id of the user.
+     * @param role The new role of the user.
+     */
     private suspend fun changeUserRoleByUserId(userId: String, role: String) {
         withContext(Dispatchers.IO) {
             val connection = DBconnection.getConnection()
@@ -81,6 +93,10 @@ class ManageUserAccountsAdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Deletes a user by their id.
+     * @param userId The id of the user to delete.
+     */
     private suspend fun deleteUserByUserId(userId: String) {
         withContext(Dispatchers.IO) {
             val connection = DBconnection.getConnection()

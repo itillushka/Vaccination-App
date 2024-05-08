@@ -11,9 +11,23 @@ import com.google.firebase.auth.FirebaseAuth
 import java.sql.Timestamp
 import java.util.concurrent.TimeUnit
 
+/**
+ * Worker class that runs periodically to remind the user of their upcoming appointments.
+ *
+ * This worker retrieves the appointment dates from the database and sends a notification
+ * to the user if an appointment is less than 7 days away.
+ */
 class AppointmentReminderWorker(appContext: Context, workerParams: WorkerParameters):
     Worker(appContext, workerParams) {
 
+    /**
+     * This method contains the work that needs to be performed.
+     *
+     * It retrieves the appointment dates from the database and sends a notification
+     * to the user if an appointment is less than 7 days away.
+     *
+     * @return The result of the work, either [Result.success()] or [Result.failure()].
+     */
     override fun doWork(): Result {
         // Retrieve the appointment dates from the database
         val connection = DBconnection.getConnection()
