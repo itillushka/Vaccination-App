@@ -27,7 +27,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import android.provider.Settings
+import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import com.google.firebase.auth.EmailAuthProvider
 
 /**
  * A [Fragment] subclass that represents the user's profile.
@@ -228,13 +230,40 @@ class ChangePasswordDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get the close button from the popup view
+        val editTextOldPassword = view.findViewById<EditText>(R.id.editTextChangeOldPassword)
+        val editTextNewPassword = view.findViewById<EditText>(R.id.editTextChangeNewPassword)
+        val buttonConfirm = view.findViewById<Button>(R.id.buttonConfirmPasswordPopup)
         val closeButton = view.findViewById<Button>(R.id.buttonClosePasswordPopup)
 
-        // Set an OnClickListener for the close button
         closeButton.setOnClickListener {
-            // Dismiss the popup window when the close button is clicked
             dismiss()
+        }
+
+        buttonConfirm.setOnClickListener {
+            val oldPassword = editTextOldPassword.text.toString()
+            val newPassword = editTextNewPassword.text.toString()
+
+            val user = FirebaseAuth.getInstance().currentUser
+            val credential = EmailAuthProvider.getCredential(user!!.email!!, oldPassword)
+
+            user.reauthenticate(credential).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    user.updatePassword(newPassword).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(context, "Password updated", Toast.LENGTH_SHORT).show()
+                            dismiss()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Error password not updated",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } else {
+                    Toast.makeText(context, "Error auth failed", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
