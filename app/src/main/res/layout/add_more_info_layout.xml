@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:srcCompat="@drawable/change_password_background" />
+
+    <TextView
+        android:id="@+id/textViewStatic21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Add more Information"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:layout_constraintVertical_bias="0.13999999" />
+
+    <EditText
+        android:id="@+id/editTextAddInfoPhone"
+        android:layout_width="326dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/fancy_edittext"
+        android:drawableStart="@drawable/phone_icon"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:fontFamily="@font/inter_regular"
+        android:hint="Phone number"
+        android:inputType="phone"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textColor="@color/text_gray"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStatic21" />
+
+    <EditText
+        android:id="@+id/editTextAddInfoAge"
+        android:layout_width="326dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/fancy_edittext"
+        android:drawableStart="@drawable/user_register_icon"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:fontFamily="@font/inter_regular"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textColor="@color/text_gray"
+        android:textSize="14dp"
+        android:hint="Age"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/editTextAddInfoPhone"
+        app:layout_constraintStart_toStartOf="@+id/editTextAddInfoPhone"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAddInfoPhone" />
+
+    <Spinner
+        android:id="@+id/spinnerGender"
+        android:layout_width="326dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/fancy_edittext"
+        android:fontFamily="@font/inter_regular"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textColor="@color/text_gray"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/editTextAddInfoAge"
+        app:layout_constraintStart_toStartOf="@+id/editTextAddInfoAge"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAddInfoAge" />
+
+    <Button
+        android:id="@+id/buttonCloseAddInfoPopup"
+        android:layout_width="144dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="44dp"
+        android:background="@drawable/button_with_blue_stroke"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Close"
+        android:textAllCaps="false"
+        android:textColor="@color/blue_500"
+        android:textSize="13dp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonConfirmAddInfoPopup"
+        app:layout_constraintEnd_toStartOf="@+id/buttonConfirmAddInfoPopup"
+        app:layout_constraintTop_toTopOf="@+id/buttonConfirmAddInfoPopup"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/buttonConfirmAddInfoPopup"
+        android:layout_width="144dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="56dp"
+        android:text="Confirm"
+        android:background="@drawable/gradient_rounded_button"
+        android:fontFamily="@font/poppins_semibold"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="13dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.842"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerGender" />
+
+    <TextView
+        android:id="@+id/textViewStatic22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="We would want to know more about you"
+        app:layout_constraintBottom_toTopOf="@+id/editTextAddInfoPhone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.253"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStatic21"
+        app:layout_constraintVertical_bias="0.39" />
+</androidx.constraintlayout.widget.ConstraintLayout>
